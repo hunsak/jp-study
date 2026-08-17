@@ -33,9 +33,18 @@
       "type": "책",
       "unitLabel": "페이지",
       "totalUnits": 485,
-      "currentUnit": 68,
+      "currentUnit": 70,
       "addedDate": "2026-08-17"
     }
   ],
-  "logs": []
+  "logs": [
+    {
+      "id": "l_1787008131699",
+      "materialId": "m_1787007929500",
+      "date": "2026-08-17",
+      "fromUnit": 68,
+      "toUnit": 70,
+      "note": "한자는 봐도봐도 모르겠다..."
+    }
+  ]
 }
