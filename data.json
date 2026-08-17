@@ -8,6 +8,15 @@
       "totalUnits": 10000,
       "currentUnit": 200,
       "addedDate": "2026-08-17"
+    },
+    {
+      "id": "m_1787006508335",
+      "name": "회독JLPT",
+      "type": "앱",
+      "unitLabel": "페이지",
+      "totalUnits": 7180,
+      "currentUnit": 500,
+      "addedDate": "2026-08-17"
     }
   ],
   "logs": []
