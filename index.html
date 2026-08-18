@@ -232,23 +232,31 @@
     background:var(--ai);
     border-color:var(--ai);
   }
-  .log-group-title{
-    font-family:'Shippori Mincho B1',serif;
-    font-size:14.5px;
-    font-weight:700;
-    color:var(--ai);
-    margin:18px 2px 8px;
-    padding-bottom:4px;
-    border-bottom:1px solid var(--line);
+  .material-chip-wrap{
     display:flex;
-    justify-content:space-between;
-    align-items:baseline;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:14px 0 16px;
   }
-  .log-group-title span{
-    font-family:'Noto Sans KR',sans-serif;
-    font-size:11.5px;
+  .material-chip{
+    padding:8px 13px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:var(--washi-card);
+    font-size:13px;
     font-weight:600;
-    color:var(--sumi-soft);
+    color:var(--sumi);
+    cursor:pointer;
+  }
+  .material-chip .cnt{
+    opacity:.65;
+    font-weight:500;
+    margin-left:2px;
+  }
+  .material-chip.active{
+    background:var(--ai);
+    color:#fff;
+    border-color:var(--ai);
   }
     background:var(--washi-card);
     border:1px solid var(--line);
@@ -477,6 +485,7 @@ let sha = null;
 let settings = JSON.parse(localStorage.getItem('jpStudySettings') || 'null');
 let editingMaterialId = null;
 let logViewMode = 'date';
+let logMaterialFilter = null;
 
 const MILESTONES = [4,9,14,19]; // 20칸 그리드에서 25/50/75/100% 표시용 index
 
@@ -612,22 +621,32 @@ function renderLogsByDate(el){
 }
 
 function renderLogsByMaterial(el){
-  let html = '';
-  // 교재 등록 순서대로, 각 교재 안에서는 최신순
-  data.materials.forEach(m=>{
-    const logs = data.logs.filter(l=>l.materialId===m.id).sort((a,b)=>b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
-    if(logs.length===0) return;
-    html += `<div class="log-group-title">${escapeHtml(m.name)}<span>기록 ${logs.length}회</span></div>`;
-    html += logs.map(l=> logItemHtml(l, true)).join('');
-  });
-  // 삭제된 교재에 남은 기록
-  const orphaned = data.logs.filter(l=>!data.materials.find(m=>m.id===l.materialId))
-    .sort((a,b)=>b.date.localeCompare(a.date));
-  if(orphaned.length>0){
-    html += `<div class="log-group-title">(삭제된 교재)<span>기록 ${orphaned.length}회</span></div>`;
-    html += orphaned.map(l=> logItemHtml(l, true)).join('');
+  const matsWithLogs = data.materials.filter(m=> data.logs.some(l=>l.materialId===m.id));
+  const orphanedLogs = data.logs.filter(l=>!data.materials.find(m=>m.id===l.materialId));
+  if(matsWithLogs.length===0 && orphanedLogs.length===0){
+    el.innerHTML = `<div class="empty">기록이 없어요.</div>`;
+    return;
   }
-  el.innerHTML = html || `<div class="empty">기록이 없어요.</div>`;
+  const validFilterIds = matsWithLogs.map(m=>m.id).concat(orphanedLogs.length>0 ? ['__orphaned__'] : []);
+  if(!logMaterialFilter || !validFilterIds.includes(logMaterialFilter)){
+    logMaterialFilter = validFilterIds[0];
+  }
+  let chips = matsWithLogs.map(m=>{
+    const count = data.logs.filter(l=>l.materialId===m.id).length;
+    return `<span class="material-chip ${m.id===logMaterialFilter?'active':''}" onclick="selectLogMaterial('${m.id}')">${escapeHtml(m.name)}<span class="cnt">${count}</span></span>`;
+  }).join('');
+  if(orphanedLogs.length>0){
+    chips += `<span class="material-chip ${logMaterialFilter==='__orphaned__'?'active':''}" onclick="selectLogMaterial('__orphaned__')">(삭제된 교재)<span class="cnt">${orphanedLogs.length}</span></span>`;
+  }
+  const logs = logMaterialFilter==='__orphaned__' ? orphanedLogs : data.logs.filter(l=>l.materialId===logMaterialFilter);
+  const sorted = [...logs].sort((a,b)=>b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+  const listHtml = sorted.map(l=>logItemHtml(l, true)).join('') || `<div class="empty">아직 기록이 없어요.</div>`;
+  el.innerHTML = `<div class="material-chip-wrap">${chips}</div>${listHtml}`;
+}
+
+function selectLogMaterial(id){
+  logMaterialFilter = id;
+  renderLogs();
 }
 
 function logItemHtml(l, hideMaterialName){
