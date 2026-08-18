@@ -42,7 +42,7 @@
       "type": "책",
       "unitLabel": "페이지",
       "totalUnits": 293,
-      "currentUnit": 56,
+      "currentUnit": 258,
       "addedDate": "2026-08-17"
     },
     {
@@ -88,6 +88,14 @@
       "fromUnit": 69,
       "toUnit": 72,
       "note": ""
+    },
+    {
+      "id": "l_1787095510576",
+      "materialId": "m_1787008201586",
+      "date": "2026-08-18",
+      "fromUnit": 56,
+      "toUnit": 258,
+      "note": "중간에 건너뜀"
     }
   ]
 }
