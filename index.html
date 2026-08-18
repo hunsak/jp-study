@@ -282,8 +282,13 @@
   .row2{display:flex;flex-wrap:wrap;gap:10px;}
   .row2 .field{flex:1 1 130px;min-width:0;}
   .field input[type="date"]{
+    -webkit-appearance:none;
+    appearance:none;
     min-width:0;
     width:100%;
+    max-width:100%;
+    box-sizing:border-box;
+    display:block;
   }
   .sheet-actions{
     display:flex;gap:10px;margin-top:16px;
