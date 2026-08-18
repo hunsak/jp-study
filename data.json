@@ -53,6 +53,15 @@
       "totalUnits": 48000,
       "currentUnit": 0,
       "addedDate": "2026-08-18"
+    },
+    {
+      "id": "m_1787094594627",
+      "name": "딱 한 권 JLPT 일본어능력시험 단어장 N3",
+      "type": "책",
+      "unitLabel": "페이지",
+      "totalUnits": 402,
+      "currentUnit": 17,
+      "addedDate": "2026-08-18"
     }
   ],
   "logs": [
