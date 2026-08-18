@@ -252,6 +252,7 @@
     padding:20px 18px calc(20px + env(safe-area-inset-bottom));
     max-height:88vh;
     overflow-y:auto;
+    overflow-x:hidden;
   }
   .sheet h3{
     font-family:'Shippori Mincho B1',serif;
@@ -280,9 +281,9 @@
   .field textarea{resize:vertical;min-height:50px;}
   .row2{display:flex;flex-wrap:wrap;gap:10px;}
   .row2 .field{flex:1 1 130px;min-width:0;}
-  .row2 .field input[type="date"]{
+  .field input[type="date"]{
     min-width:0;
-    /* iOS Safari가 date input의 고유폭을 줄이지 않는 것을 보완 */
+    width:100%;
     font-size:14px;
     padding:10px 6px;
   }
