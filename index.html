@@ -212,7 +212,44 @@
     cursor:pointer;
     z-index:10;
   }
-  .log-item{
+  .log-toggle{
+    display:flex;
+    gap:8px;
+    margin:16px 0 12px;
+  }
+  .log-toggle-btn{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--sumi-soft);
+    background:var(--washi-card);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:6px 14px;
+    cursor:pointer;
+  }
+  .log-toggle-btn.active{
+    color:#fff;
+    background:var(--ai);
+    border-color:var(--ai);
+  }
+  .log-group-title{
+    font-family:'Shippori Mincho B1',serif;
+    font-size:14.5px;
+    font-weight:700;
+    color:var(--ai);
+    margin:18px 2px 8px;
+    padding-bottom:4px;
+    border-bottom:1px solid var(--line);
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+  }
+  .log-group-title span{
+    font-family:'Noto Sans KR',sans-serif;
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--sumi-soft);
+  }
     background:var(--washi-card);
     border:1px solid var(--line);
     border-left:3px solid var(--ai);
@@ -326,7 +363,13 @@
 
 <main>
   <div id="view-materials"></div>
-  <div id="view-logs" style="display:none;"></div>
+  <div id="view-logs" style="display:none;">
+    <div class="log-toggle" id="logToggle">
+      <span class="log-toggle-btn active" data-mode="date">날짜순</span>
+      <span class="log-toggle-btn" data-mode="material">교재별</span>
+    </div>
+    <div id="logListWrap"></div>
+  </div>
 </main>
 
 <button class="fab" id="fabBtn">＋</button>
@@ -433,6 +476,7 @@ let data = { materials: [], logs: [] };
 let sha = null;
 let settings = JSON.parse(localStorage.getItem('jpStudySettings') || 'null');
 let editingMaterialId = null;
+let logViewMode = 'date';
 
 const MILESTONES = [4,9,14,19]; // 20칸 그리드에서 25/50/75/100% 표시용 index
 
@@ -487,6 +531,14 @@ document.getElementById('fabBtn').addEventListener('click', ()=>{
 });
 
 document.getElementById('lMaterial').addEventListener('change', updateLogDefaultUnit);
+document.querySelectorAll('.log-toggle-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.log-toggle-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    logViewMode = btn.dataset.mode;
+    renderLogs();
+  });
+});
 function updateLogDefaultUnit(){
   const m = data.materials.find(x=>x.id===document.getElementById('lMaterial').value);
   document.getElementById('lToUnit').value = m ? m.currentUnit : 0;
@@ -542,25 +594,57 @@ function renderMaterials(){
 }
 
 function renderLogs(){
-  const el = document.getElementById('view-logs');
+  const el = document.getElementById('logListWrap');
   if(data.logs.length===0){
     el.innerHTML = `<div class="empty">기록이 아직 없어요.<br>교재 진도를 등록하면 여기 쌓여요.</div>`;
     return;
   }
+  if(logViewMode === 'material'){
+    renderLogsByMaterial(el);
+  } else {
+    renderLogsByDate(el);
+  }
+}
+
+function renderLogsByDate(el){
   const sorted = [...data.logs].sort((a,b)=>b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
-  el.innerHTML = sorted.map(l=>{
-    const m = data.materials.find(x=>x.id===l.materialId);
-    const mName = m ? m.name : '(삭제된 교재)';
-    const delta = l.toUnit - l.fromUnit;
-    const deltaTxt = delta>0 ? `+${delta}` : `${delta}`;
-    return `
-      <div class="log-item">
-        <div class="log-date">${formatDate(l.date)}</div>
-        <div class="log-body"><b>${escapeHtml(mName)}</b> · ${l.fromUnit} → ${l.toUnit} (${deltaTxt})</div>
-        ${l.note ? `<div class="log-note">${escapeHtml(l.note)}</div>` : ''}
-      </div>
-    `;
-  }).join('');
+  el.innerHTML = sorted.map(l=> logItemHtml(l)).join('');
+}
+
+function renderLogsByMaterial(el){
+  let html = '';
+  // 교재 등록 순서대로, 각 교재 안에서는 최신순
+  data.materials.forEach(m=>{
+    const logs = data.logs.filter(l=>l.materialId===m.id).sort((a,b)=>b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+    if(logs.length===0) return;
+    html += `<div class="log-group-title">${escapeHtml(m.name)}<span>기록 ${logs.length}회</span></div>`;
+    html += logs.map(l=> logItemHtml(l, true)).join('');
+  });
+  // 삭제된 교재에 남은 기록
+  const orphaned = data.logs.filter(l=>!data.materials.find(m=>m.id===l.materialId))
+    .sort((a,b)=>b.date.localeCompare(a.date));
+  if(orphaned.length>0){
+    html += `<div class="log-group-title">(삭제된 교재)<span>기록 ${orphaned.length}회</span></div>`;
+    html += orphaned.map(l=> logItemHtml(l, true)).join('');
+  }
+  el.innerHTML = html || `<div class="empty">기록이 없어요.</div>`;
+}
+
+function logItemHtml(l, hideMaterialName){
+  const m = data.materials.find(x=>x.id===l.materialId);
+  const mName = m ? m.name : '(삭제된 교재)';
+  const delta = l.toUnit - l.fromUnit;
+  const deltaTxt = delta>0 ? `+${delta}` : `${delta}`;
+  const bodyMain = hideMaterialName
+    ? `${l.fromUnit} → ${l.toUnit} (${deltaTxt})`
+    : `<b>${escapeHtml(mName)}</b> · ${l.fromUnit} → ${l.toUnit} (${deltaTxt})`;
+  return `
+    <div class="log-item">
+      <div class="log-date">${formatDate(l.date)}</div>
+      <div class="log-body">${bodyMain}</div>
+      ${l.note ? `<div class="log-note">${escapeHtml(l.note)}</div>` : ''}
+    </div>
+  `;
 }
 
 function quickLog(materialId){
