@@ -62,6 +62,16 @@
       "totalUnits": 402,
       "currentUnit": 17,
       "addedDate": "2026-08-18"
+    },
+    {
+      "id": "m_1787180070547",
+      "name": "듀오링고",
+      "type": "앱",
+      "trackMode": "check",
+      "unitLabel": null,
+      "totalUnits": null,
+      "currentUnit": 0,
+      "addedDate": "2026-08-19"
     }
   ],
   "logs": [
