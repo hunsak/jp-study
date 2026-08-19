@@ -43,7 +43,7 @@
       "type": "책",
       "unitLabel": "페이지",
       "totalUnits": 293,
-      "currentUnit": 258,
+      "currentUnit": 284,
       "addedDate": "2026-08-17"
     },
     {
@@ -115,6 +115,14 @@
       "fromUnit": 201,
       "toUnit": 247,
       "note": "N5 위주로 일단 빨리 끝내고 N4 넘어가자"
+    },
+    {
+      "id": "l_1787181776854",
+      "materialId": "m_1787008201586",
+      "date": "2026-08-19",
+      "fromUnit": 258,
+      "toUnit": 284,
+      "note": ""
     }
   ]
 }
