@@ -212,7 +212,49 @@
     cursor:pointer;
     z-index:10;
   }
-  .log-toggle{
+  .streak-row{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    margin-top:2px;
+  }
+  .streak-num{
+    font-family:'Shippori Mincho B1',serif;
+    font-size:22px;
+    font-weight:800;
+    color:var(--shu);
+  }
+  .streak-label{
+    font-size:11.5px;
+    color:var(--sumi-soft);
+  }
+  .check-grid{
+    display:grid;
+    grid-template-columns:repeat(14,1fr);
+    gap:3px;
+    margin-top:12px;
+  }
+  .check-cell{
+    aspect-ratio:1;
+    border:1px solid var(--grid-line);
+    border-radius:2px;
+    background:transparent;
+    position:relative;
+  }
+  .check-cell.done{
+    background:var(--shu);
+    border-color:var(--shu);
+  }
+  .check-cell.today{
+    box-shadow:0 0 0 2px var(--ai) inset;
+  }
+  .btn-check{
+    background:var(--ai);
+    color:#fff;
+  }
+  .btn-check.checked{
+    background:var(--shu);
+  }
     display:flex;
     gap:8px;
     margin:16px 0 12px;
@@ -389,7 +431,7 @@
     <h3 id="materialSheetTitle">教材追加 · 교재 등록</h3>
     <div class="field">
       <label>이름</label>
-      <input type="text" id="mName" placeholder="예: 다이스키 일본어 N3, 満点 N3 문법">
+      <input type="text" id="mName" placeholder="예: 다이스키 일본어 N3, Duolingo">
     </div>
     <div class="row2">
       <div class="field">
@@ -401,18 +443,29 @@
         </select>
       </div>
       <div class="field">
-        <label>단위</label>
-        <input type="text" id="mUnitLabel" placeholder="페이지 / 과 / 챕터" value="페이지">
+        <label>추적 방식</label>
+        <select id="mTrackMode" onchange="toggleTrackModeFields()">
+          <option value="progress">진도율 (분량 기준)</option>
+          <option value="check">매일 체크 (했다/안했다)</option>
+        </select>
       </div>
     </div>
-    <div class="row2">
-      <div class="field">
-        <label>전체 분량</label>
-        <input type="number" id="mTotal" placeholder="예: 320" min="1">
+    <div id="progressFields">
+      <div class="row2">
+        <div class="field">
+          <label>단위</label>
+          <input type="text" id="mUnitLabel" placeholder="페이지 / 과 / 챕터" value="페이지">
+        </div>
       </div>
-      <div class="field">
-        <label>현재까지 진도</label>
-        <input type="number" id="mCurrent" placeholder="0" value="0" min="0">
+      <div class="row2">
+        <div class="field">
+          <label>전체 분량</label>
+          <input type="number" id="mTotal" placeholder="예: 320" min="1">
+        </div>
+        <div class="field">
+          <label>현재까지 진도</label>
+          <input type="number" id="mCurrent" placeholder="0" value="0" min="0">
+        </div>
       </div>
     </div>
     <div class="sheet-actions">
@@ -435,7 +488,7 @@
       <label>날짜</label>
       <input type="date" id="lDate">
     </div>
-    <div class="field">
+    <div class="field" id="lToUnitField">
       <label>진도 (여기까지)</label>
       <input type="number" id="lToUnit" min="0">
     </div>
@@ -522,9 +575,11 @@ document.getElementById('fabBtn').addEventListener('click', ()=>{
     document.getElementById('materialDeleteLink').style.display = 'none';
     document.getElementById('mName').value='';
     document.getElementById('mType').value='책';
+    document.getElementById('mTrackMode').value='progress';
     document.getElementById('mUnitLabel').value='페이지';
     document.getElementById('mTotal').value='';
     document.getElementById('mCurrent').value='0';
+    toggleTrackModeFields();
     openSheet('overlayMaterial');
   } else {
     if(data.materials.length===0){
@@ -551,11 +606,18 @@ document.querySelectorAll('.log-toggle-btn').forEach(btn=>{
 });
 function updateLogDefaultUnit(){
   const m = data.materials.find(x=>x.id===document.getElementById('lMaterial').value);
-  document.getElementById('lToUnit').value = m ? m.currentUnit : 0;
+  const isCheck = m && m.trackMode==='check';
+  document.getElementById('lToUnitField').style.display = isCheck ? 'none' : '';
+  document.getElementById('lToUnit').value = (m && !isCheck) ? m.currentUnit : 0;
 }
 
 function openSheet(id){ document.getElementById(id).classList.add('show'); }
 function closeSheet(id){ document.getElementById(id).classList.remove('show'); }
+
+function toggleTrackModeFields(){
+  const mode = document.getElementById('mTrackMode').value;
+  document.getElementById('progressFields').style.display = mode==='check' ? 'none' : '';
+}
 
 // ---------- 렌더링 ----------
 function render(){
@@ -570,37 +632,111 @@ function renderMaterials(){
     return;
   }
   el.innerHTML = data.materials.map(m=>{
-    const pct = m.totalUnits>0 ? Math.min(100, Math.round((m.currentUnit/m.totalUnits)*100)) : 0;
-    const filledCells = Math.round(pct/5);
-    let cells = '';
-    for(let i=0;i<20;i++){
-      const filled = i < filledCells;
-      const isMilestone = MILESTONES.includes(i);
-      cells += `<div class="cell ${filled?'filled':''} ${isMilestone?'milestone':''}"></div>`;
-    }
-    const lastLog = data.logs.filter(l=>l.materialId===m.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
-    const lastTxt = lastLog ? `마지막 기록 ${daysAgoText(lastLog.date)}` : '아직 기록 없음';
-    return `
-      <div class="card">
-        <div class="card-top">
-          <div>
-            <div class="card-title">${escapeHtml(m.name)}</div>
-            <span class="badge">${escapeHtml(m.type)}</span>
-          </div>
-          <div class="percent">${pct}%</div>
+    return m.trackMode === 'check' ? checkCardHtml(m) : progressCardHtml(m);
+  }).join('');
+}
+
+function progressCardHtml(m){
+  const pct = m.totalUnits>0 ? Math.min(100, Math.round((m.currentUnit/m.totalUnits)*100)) : 0;
+  const filledCells = Math.round(pct/5);
+  let cells = '';
+  for(let i=0;i<20;i++){
+    const filled = i < filledCells;
+    const isMilestone = MILESTONES.includes(i);
+    cells += `<div class="cell ${filled?'filled':''} ${isMilestone?'milestone':''}"></div>`;
+  }
+  const lastLog = data.logs.filter(l=>l.materialId===m.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
+  const lastTxt = lastLog ? `마지막 기록 ${daysAgoText(lastLog.date)}` : '아직 기록 없음';
+  return `
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-title">${escapeHtml(m.name)}</div>
+          <span class="badge">${escapeHtml(m.type)}</span>
         </div>
-        <div class="unit-line">${m.currentUnit} / ${m.totalUnits} ${escapeHtml(m.unitLabel)}</div>
-        <div class="grid-meter">${cells}</div>
-        <div class="card-foot">
-          <span class="last-touch">${lastTxt}</span>
-          <div style="display:flex;gap:8px;">
-            <button class="btn btn-ghost" onclick="editMaterial('${m.id}')">수정</button>
-            <button class="btn btn-primary" onclick="quickLog('${m.id}')">기록</button>
-          </div>
+        <div class="percent">${pct}%</div>
+      </div>
+      <div class="unit-line">${m.currentUnit} / ${m.totalUnits} ${escapeHtml(m.unitLabel)}</div>
+      <div class="grid-meter">${cells}</div>
+      <div class="card-foot">
+        <span class="last-touch">${lastTxt}</span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="editMaterial('${m.id}')">수정</button>
+          <button class="btn btn-primary" onclick="quickLog('${m.id}')">기록</button>
         </div>
       </div>
-    `;
-  }).join('');
+    </div>
+  `;
+}
+
+function checkCardHtml(m){
+  const checkedDates = new Set(data.logs.filter(l=>l.materialId===m.id).map(l=>l.date));
+  const streak = calcStreak(checkedDates);
+  const todayStr = new Date().toISOString().slice(0,10);
+  const isCheckedToday = checkedDates.has(todayStr);
+
+  // 최근 14일 (오늘 포함, 왼쪽이 과거)
+  let cells = '';
+  for(let i=13;i>=0;i--){
+    const d = new Date();
+    d.setDate(d.getDate()-i);
+    const dStr = d.toISOString().slice(0,10);
+    const done = checkedDates.has(dStr);
+    const isToday = dStr===todayStr;
+    cells += `<div class="check-cell ${done?'done':''} ${isToday?'today':''}"></div>`;
+  }
+
+  const lastLog = data.logs.filter(l=>l.materialId===m.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
+  const lastTxt = lastLog ? `마지막 체크 ${daysAgoText(lastLog.date)}` : '아직 체크 없음';
+
+  return `
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-title">${escapeHtml(m.name)}</div>
+          <span class="badge">${escapeHtml(m.type)}</span>
+        </div>
+        <div class="streak-row">
+          <span class="streak-num">${streak}</span>
+          <span class="streak-label">일 연속</span>
+        </div>
+      </div>
+      <div class="check-grid">${cells}</div>
+      <div class="card-foot">
+        <span class="last-touch">${lastTxt}</span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="editMaterial('${m.id}')">수정</button>
+          <button class="btn btn-check ${isCheckedToday?'checked':''}" onclick="toggleTodayCheck('${m.id}')">${isCheckedToday?'오늘 완료 ✓':'오늘 체크'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function calcStreak(checkedDatesSet){
+  let streak = 0;
+  const d = new Date();
+  // 오늘 체크 안 했으면 어제부터 세기 시작 (오늘 아직 안 해서 스트릭 끊긴 걸로 보이지 않게)
+  if(!checkedDatesSet.has(d.toISOString().slice(0,10))){
+    d.setDate(d.getDate()-1);
+  }
+  while(checkedDatesSet.has(d.toISOString().slice(0,10))){
+    streak++;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+
+function toggleTodayCheck(materialId){
+  const todayStr = new Date().toISOString().slice(0,10);
+  const existing = data.logs.find(l=>l.materialId===materialId && l.date===todayStr);
+  if(existing){
+    data.logs = data.logs.filter(l=>l!==existing);
+  } else {
+    data.logs.push({ id:'l_'+Date.now(), materialId, date: todayStr, fromUnit:0, toUnit:1, note:'' });
+  }
+  render();
+  syncToGitHub();
 }
 
 function renderLogs(){
@@ -653,11 +789,17 @@ function selectLogMaterial(id){
 function logItemHtml(l, hideMaterialName){
   const m = data.materials.find(x=>x.id===l.materialId);
   const mName = m ? m.name : '(삭제된 교재)';
-  const delta = l.toUnit - l.fromUnit;
-  const deltaTxt = delta>0 ? `+${delta}` : `${delta}`;
+  let progressTxt;
+  if(m && m.trackMode === 'check'){
+    progressTxt = '오늘 학습 완료 ✓';
+  } else {
+    const delta = l.toUnit - l.fromUnit;
+    const deltaTxt = delta>0 ? `+${delta}` : `${delta}`;
+    progressTxt = `${l.fromUnit} → ${l.toUnit} (${deltaTxt})`;
+  }
   const bodyMain = hideMaterialName
-    ? `${l.fromUnit} → ${l.toUnit} (${deltaTxt})`
-    : `<b>${escapeHtml(mName)}</b> · ${l.fromUnit} → ${l.toUnit} (${deltaTxt})`;
+    ? progressTxt
+    : `<b>${escapeHtml(mName)}</b> · ${progressTxt}`;
   return `
     <div class="log-item">
       <div class="log-date">${formatDate(l.date)}</div>
@@ -685,9 +827,11 @@ function editMaterial(materialId){
   document.getElementById('materialDeleteLink').style.display = 'block';
   document.getElementById('mName').value = m.name;
   document.getElementById('mType').value = m.type;
-  document.getElementById('mUnitLabel').value = m.unitLabel;
-  document.getElementById('mTotal').value = m.totalUnits;
-  document.getElementById('mCurrent').value = m.currentUnit;
+  document.getElementById('mTrackMode').value = m.trackMode || 'progress';
+  document.getElementById('mUnitLabel').value = m.unitLabel || '페이지';
+  document.getElementById('mTotal').value = m.totalUnits || '';
+  document.getElementById('mCurrent').value = m.currentUnit || 0;
+  toggleTrackModeFields();
   openSheet('overlayMaterial');
 }
 
@@ -706,29 +850,41 @@ function deleteMaterial(){
 function saveMaterial(){
   const name = document.getElementById('mName').value.trim();
   const type = document.getElementById('mType').value;
-  const unitLabel = document.getElementById('mUnitLabel').value.trim() || '페이지';
-  const total = parseInt(document.getElementById('mTotal').value);
-  const current = parseInt(document.getElementById('mCurrent').value) || 0;
-  if(!name || !total || total<=0){
-    alert('이름과 전체 분량을 입력해주세요.');
+  const trackMode = document.getElementById('mTrackMode').value;
+
+  if(!name){
+    alert('이름을 입력해주세요.');
     return;
   }
+
+  let unitLabel = null, total = null, current = 0;
+  if(trackMode === 'progress'){
+    unitLabel = document.getElementById('mUnitLabel').value.trim() || '페이지';
+    total = parseInt(document.getElementById('mTotal').value);
+    current = parseInt(document.getElementById('mCurrent').value) || 0;
+    if(!total || total<=0){
+      alert('전체 분량을 입력해주세요.');
+      return;
+    }
+    current = Math.min(current, total);
+  }
+
   if(editingMaterialId){
     const m = data.materials.find(x=>x.id===editingMaterialId);
     if(m){
       m.name = name;
       m.type = type;
+      m.trackMode = trackMode;
       m.unitLabel = unitLabel;
       m.totalUnits = total;
-      m.currentUnit = Math.min(current, total);
+      m.currentUnit = current;
     }
     editingMaterialId = null;
   } else {
     data.materials.push({
       id: 'm_'+Date.now(),
-      name, type, unitLabel,
-      totalUnits: total,
-      currentUnit: Math.min(current,total),
+      name, type, trackMode,
+      unitLabel, totalUnits: total, currentUnit: current,
       addedDate: new Date().toISOString().slice(0,10)
     });
   }
@@ -740,21 +896,30 @@ function saveMaterial(){
 function saveLog(){
   const materialId = document.getElementById('lMaterial').value;
   const date = document.getElementById('lDate').value;
-  const toUnit = parseInt(document.getElementById('lToUnit').value);
   const note = document.getElementById('lNote').value.trim();
   const m = data.materials.find(x=>x.id===materialId);
-  if(!m || isNaN(toUnit)){
-    alert('진도를 입력해주세요.');
+  if(!m || !date){
+    alert('교재와 날짜를 확인해주세요.');
     return;
   }
-  const fromUnit = m.currentUnit;
-  data.logs.push({
-    id: 'l_'+Date.now(),
-    materialId, date,
-    fromUnit, toUnit,
-    note
-  });
-  m.currentUnit = Math.max(0, Math.min(toUnit, m.totalUnits));
+  if(m.trackMode === 'check'){
+    // 같은 날짜 기록이 이미 있으면 메모만 덮어쓰기
+    const existing = data.logs.find(l=>l.materialId===materialId && l.date===date);
+    if(existing){
+      existing.note = note;
+    } else {
+      data.logs.push({ id:'l_'+Date.now(), materialId, date, fromUnit:0, toUnit:1, note });
+    }
+  } else {
+    const toUnit = parseInt(document.getElementById('lToUnit').value);
+    if(isNaN(toUnit)){
+      alert('진도를 입력해주세요.');
+      return;
+    }
+    const fromUnit = m.currentUnit;
+    data.logs.push({ id:'l_'+Date.now(), materialId, date, fromUnit, toUnit, note });
+    m.currentUnit = Math.max(0, Math.min(toUnit, m.totalUnits));
+  }
   closeSheet('overlayLog');
   render();
   syncToGitHub();
