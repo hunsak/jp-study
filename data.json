@@ -6,7 +6,7 @@
       "type": "앱",
       "unitLabel": "장기기억단어",
       "totalUnits": 11664,
-      "currentUnit": 201,
+      "currentUnit": 247,
       "addedDate": "2026-08-17"
     },
     {
@@ -96,6 +96,14 @@
       "fromUnit": 56,
       "toUnit": 258,
       "note": "중간에 건너뜀"
+    },
+    {
+      "id": "l_1787116747348",
+      "materialId": "m_1787006425577",
+      "date": "2026-08-19",
+      "fromUnit": 201,
+      "toUnit": 247,
+      "note": "N5 위주로 일단 빨리 끝내고 N4 넘어가자"
     }
   ]
 }
