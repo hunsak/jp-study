@@ -3,1105 +3,1052 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<link rel="manifest" href="./manifest.json">
-<meta name="theme-color" content="#2F6B4F">
-<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
-<meta http-equiv="Pragma" content="no-cache">
-<meta http-equiv="Expires" content="0">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="태원이의 시간표">
-<link rel="apple-touch-icon" href="./icon-180.png">
-<link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
-<title>태원이의 시간표</title>
+<title>原稿帳 · 일본어 학습 기록</title>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="theme-color" content="#2F4858">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans+KR:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho+B1:wght@500;700;800&family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#EEF0E9;
-    --panel:#FFFFFF;
-    --ink:#22303B;
-    --ink-soft:#5B6B76;
-    --ink-faint:#95A19A;
-    --accent:#2F6B4F;
-    --accent-soft:#DCE9E0;
-    --now:#E8B23D;
-    --now-soft:#FCF0D4;
-    --now-fill:rgba(232,178,61,.22);
-    --line:#DCE0D6;
-    --danger:#B0503A;
-    --radius:14px;
+    --washi:#EDE8DA;
+    --washi-card:#F8F5EC;
+    --sumi:#232B2F;
+    --sumi-soft:#5B6469;
+    --ai:#2F4858;
+    --ai-light:#6D8A99;
+    --ai-pale:#DCE5E8;
+    --shu:#B33A3A;
+    --grid-line:#C9C2AC;
+    --line:#DAD3C0;
   }
-  *{box-sizing:border-box;}
-  html,body{margin:0;padding:0;}
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
   body{
-    background:var(--bg);
-    color:var(--ink);
-    font-family:'IBM Plex Sans KR', sans-serif;
-    -webkit-font-smoothing:antialiased;
+    margin:0;
+    background:var(--washi);
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 28px 28px;
+    background-attachment:fixed;
+    color:var(--sumi);
+    font-family:'Noto Sans KR',sans-serif;
+    padding-bottom:96px;
     min-height:100vh;
   }
-  .mono{font-family:'IBM Plex Mono', monospace;}
-  .display{font-family:'IBM Plex Sans KR', sans-serif; font-weight:700;}
-  #app{max-width:560px;margin:0 auto;padding:calc(20px + env(safe-area-inset-top)) 16px 64px;}
-
-  header.top{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px;}
-  header.top h1{font-size:23px;margin:0;letter-spacing:-0.3px;}
-  header.top h1 .eyebrow{display:block;font-family:'Space Grotesk',sans-serif;font-size:11px;letter-spacing:2.5px;color:var(--ink-faint);font-weight:600;margin-bottom:2px;}
-  .top-actions{display:flex;gap:8px;align-items:center;}
-  button{font-family:inherit;cursor:pointer;}
-  .icon-btn{
-    background:var(--panel);border:1px solid var(--line);border-radius:10px;
-    width:38px;height:38px;display:flex;align-items:center;justify-content:center;
-    font-size:16px;color:var(--ink-soft);
+  .display{font-family:'Shippori Mincho B1',serif;}
+  header{
+    padding:28px 20px 18px;
+    text-align:center;
+    position:relative;
   }
-  .icon-btn:hover{border-color:var(--accent);color:var(--accent);}
-
-  .semester-toggle{display:grid;grid-template-columns:repeat(4,1fr);background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:3px;gap:2px;margin-bottom:14px;}
-  .semester-toggle button{
-    border:none;background:transparent;padding:10px 0;border-radius:8px;
-    font-weight:700;font-size:13px;color:var(--ink-soft);transition:.15s;
+  header .kanji-title{
+    font-family:'Shippori Mincho B1',serif;
+    font-weight:800;
+    font-size:30px;
+    letter-spacing:.14em;
+    color:var(--ai);
+    margin:0;
   }
-  .semester-toggle button.active{background:var(--accent);color:#fff;}
-
-  .day-tabs{display:flex;gap:6px;margin-bottom:18px;}
-  .day-tab{
-    flex:1;background:var(--panel);border:1px solid var(--line);border-radius:12px;
-    padding:10px 0 8px;text-align:center;color:var(--ink-soft);
+  header .sub{
+    margin-top:4px;
+    font-size:12.5px;
+    color:var(--sumi-soft);
+    letter-spacing:.04em;
   }
-  .day-tab .kr{display:block;font-size:19px;font-weight:700;color:var(--ink);}
-  .day-tab .en{display:block;font-family:'Space Grotesk',sans-serif;font-size:10.5px;letter-spacing:1.5px;margin-top:2px;color:var(--ink-faint);}
-  .day-tab.active{border-color:var(--accent);background:var(--accent-soft);}
-  .day-tab.active .kr{color:var(--accent);}
-  .day-tab.active .en{color:var(--accent);}
-  .day-tab.today::after{content:'';display:block;width:5px;height:5px;border-radius:50%;background:var(--now);margin:5px auto 0;}
-
-  .date-line{font-family:'Space Grotesk',sans-serif;font-size:13.5px;letter-spacing:1px;color:var(--ink-soft);margin-bottom:12px;text-transform:uppercase;font-weight:600;}
-  .override-banner{background:var(--now-soft);color:#6b4e10;border-radius:10px;padding:10px 12px;margin-bottom:14px;font-size:13px;font-weight:600;line-height:1.4;}
-
-  .override-card{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;background:var(--panel);}
-  .override-card .row1{display:flex;gap:8px;margin-bottom:8px;}
-  .override-card .row1 input[type=text]{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14px;}
-  .override-card .row2{display:flex;align-items:center;gap:8px;margin-bottom:10px;}
-  .override-card .row2 input[type=date]{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:7px 6px;font-family:'IBM Plex Mono',monospace;font-size:12px;}
-  .ov-academy-list .academy-row{background:var(--bg);}
-
-  .empty-state{
-    background:var(--panel);border:1px dashed var(--line);border-radius:var(--radius);
-    padding:36px 20px;text-align:center;color:var(--ink-soft);
+  .hanko{
+    position:absolute;
+    top:20px; right:18px;
+    width:44px;height:44px;
+    border:2px solid var(--shu);
+    border-radius:6px;
+    display:flex;align-items:center;justify-content:center;
+    color:var(--shu);
+    font-family:'Shippori Mincho B1',serif;
+    font-weight:700;
+    font-size:11px;
+    line-height:1.15;
+    text-align:center;
+    transform:rotate(-4deg);
+    opacity:.9;
+    cursor:pointer;
+    background:rgba(179,58,58,0.04);
   }
-  .empty-state .glyph{font-size:26px;margin-bottom:8px;}
-  .empty-state button{
-    margin-top:14px;background:var(--accent);color:#fff;border:none;border-radius:10px;
-    padding:10px 18px;font-weight:600;font-size:14px;
+  .tabs{
+    display:flex;
+    margin:0 16px 14px;
+    background:var(--washi-card);
+    border:1px solid var(--line);
+    border-radius:10px;
+    overflow:hidden;
   }
-
-  .timeline{position:relative;padding-left:66px;}
-  .timeline::before{content:'';position:absolute;left:52px;top:6px;bottom:6px;width:1px;background:var(--line);}
-  .block{position:relative;margin-bottom:12px;}
-  .block .time{
-    position:absolute;left:-66px;top:15px;width:60px;text-align:right;
-    font-size:14px;font-weight:600;color:var(--ink-soft);line-height:1.3;
+  .tab{
+    flex:1;
+    text-align:center;
+    padding:11px 0;
+    font-size:14px;
+    font-weight:600;
+    color:var(--sumi-soft);
+    cursor:pointer;
+    border-bottom:2px solid transparent;
   }
-  .block .dot{display:none;}
+  .tab.active{
+    color:var(--ai);
+    background:var(--ai-pale);
+    border-bottom:2px solid var(--ai);
+  }
+  main{padding:0 16px;}
+  .empty{
+    text-align:center;
+    color:var(--sumi-soft);
+    font-size:13.5px;
+    padding:40px 20px;
+    border:1px dashed var(--grid-line);
+    border-radius:10px;
+    background:var(--washi-card);
+  }
   .card{
-    background:var(--panel);border:1px solid var(--line);border-radius:12px;
-    padding:14px 16px;position:relative;overflow:hidden;
+    background:var(--washi-card);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px;
+    margin-bottom:12px;
+    box-shadow:0 1px 0 rgba(35,43,47,0.03);
   }
-  .card > *{position:relative;z-index:1;}
-  .card .fill{position:absolute;left:0;top:0;width:100%;height:0%;background:var(--now-fill);z-index:0;transition:height 1s linear;}
-  .card .label{font-weight:700;font-size:20px;}
-  .card .range{font-family:'IBM Plex Mono',monospace;font-size:15.5px;font-weight:500;color:var(--ink-soft);margin-top:4px;}
-  .card .dur{color:var(--ink-soft);font-weight:600;}
-  .block.school .dot{background:var(--ink-soft);}
-  .block.free .card{background:transparent;border-style:dashed;color:var(--ink-faint);}
-  .block.free .label{font-weight:500;color:var(--ink-faint);}
-  .block.academy .dot{background:var(--subject-color, var(--accent));}
-  .block.academy .card{border-left:4px solid var(--subject-color, var(--accent));}
-  .block.makeup .dot{background:var(--subject-color, var(--accent));}
-  .block.makeup .card{border-left:4px dashed var(--subject-color, var(--accent));}
-  .makeup-badge{
-    display:inline-block;margin-left:7px;font-size:10.5px;font-weight:700;
-    color:var(--subject-color, var(--accent));background:var(--now-soft);
-    padding:1.5px 8px;border-radius:20px;vertical-align:middle;
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap:8px;
   }
-  .block.now .dot{background:var(--now);box-shadow:0 0 0 4px var(--now-soft);}
-  .block.now .card{border-color:var(--now);box-shadow:0 2px 10px rgba(232,178,61,.25);}
-  .block.now .tag{
-    display:inline-block;margin-left:8px;background:var(--now);color:#3a2b06;
-    font-size:13px;font-weight:700;padding:2px 9px;border-radius:20px;vertical-align:middle;
+  .card-title{
+    font-family:'Shippori Mincho B1',serif;
+    font-weight:700;
+    font-size:17px;
+    color:var(--sumi);
   }
-
-  /* Settings modal */
-  .modal-backdrop{
-    position:fixed;inset:0;background:rgba(20,26,22,.45);display:flex;
-    align-items:flex-end;justify-content:center;z-index:50;
+  .badge{
+    font-size:10.5px;
+    padding:2px 8px;
+    border-radius:20px;
+    background:var(--ai-pale);
+    color:var(--ai);
+    font-weight:600;
+    white-space:nowrap;
+    margin-top:2px;
+    display:inline-block;
   }
-  @media(min-width:640px){.modal-backdrop{align-items:center;}}
-  .modal{
-    background:var(--bg);width:100%;max-width:560px;max-height:88vh;overflow-y:auto;
-    border-radius:18px 18px 0 0;padding:20px 18px 28px;
+  .percent{
+    font-family:'Shippori Mincho B1',serif;
+    font-size:22px;
+    font-weight:800;
+    color:var(--ai);
+    min-width:56px;
+    text-align:right;
   }
-  @media(min-width:640px){.modal{border-radius:18px;}}
-  .modal h2{font-size:17px;margin:0 0 4px;}
-  .modal .sub{color:var(--ink-soft);font-size:13px;margin:0 0 16px;}
-  .modal .close{position:sticky;top:0;float:right;}
-  .section{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin-bottom:14px;}
-  .section h3{font-size:14px;margin:0 0 12px;display:flex;align-items:center;gap:6px;}
-  .school-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;}
-  .school-grid label{text-align:center;font-size:12px;color:var(--ink-soft);display:block;margin-bottom:4px;}
-  .school-grid input{width:100%;border:1px solid var(--line);border-radius:8px;padding:6px 2px;font-size:12.5px;text-align:center;font-family:'IBM Plex Mono',monospace;}
-
-  .academy-row{border:1px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;}
-  .academy-row .row1{display:flex;gap:8px;margin-bottom:8px;}
-  .academy-row input[type=text]{flex:1;border:1px solid var(--line);border-radius:8px;padding:8px 10px;font-size:14px;}
-  .academy-row input[type=color]{width:38px;height:38px;border:1px solid var(--line);border-radius:8px;padding:2px;}
-  .academy-row .days{display:flex;gap:4px;margin-bottom:8px;}
-  .day-chip{
-    flex:1;text-align:center;padding:6px 0;border:1px solid var(--line);border-radius:8px;
-    font-size:12px;color:var(--ink-soft);user-select:none;
+  .unit-line{
+    font-size:12px;
+    color:var(--sumi-soft);
+    margin-top:2px;
   }
-  .day-chip.on{background:var(--accent);border-color:var(--accent);color:#fff;font-weight:600;}
-  .academy-row .row3{display:flex;align-items:center;gap:8px;}
-  .academy-row input[type=time]{border:1px solid var(--line);border-radius:8px;padding:7px 8px;font-family:'IBM Plex Mono',monospace;font-size:13px;}
-  .makeup-row input[type=date]{border:1px solid var(--line);border-radius:8px;padding:7px 8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;flex-shrink:0;}
-  .academy-row .tilde{color:var(--ink-faint);}
-  .pause-toggle{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:12.5px;color:var(--ink-soft);user-select:none;cursor:pointer;}
-  .pause-toggle input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);}
-  .row4.pause-fields{display:flex;align-items:center;gap:8px;margin-top:8px;}
-  .row4.pause-fields input[type=date]{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:7px 6px;font-family:'IBM Plex Mono',monospace;font-size:12px;}
-  .del-btn{margin-left:auto;border:none;background:none;color:var(--danger);font-size:13px;padding:4px 6px;}
-  .add-row-btn{width:100%;border:1px dashed var(--line);background:transparent;border-radius:10px;padding:10px;color:var(--ink-soft);font-size:13.5px;font-weight:600;}
-
-  .period-block{margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--line);}
-  .period-block:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0;}
-  .period-block-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;}
-  .period-block-header .plabel{font-size:13.5px;font-weight:700;}
-  .pr-add{border:none;background:var(--accent-soft);color:var(--accent);font-size:11.5px;font-weight:600;padding:4px 9px;border-radius:20px;}
-  .period-range-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;}
-  .period-range-row input[type=date]{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:7px 6px;font-family:'IBM Plex Mono',monospace;font-size:12px;}
-  .period-range-row .tilde{color:var(--ink-faint);flex-shrink:0;}
-  .period-range-row .pr-del{border:none;background:none;color:var(--danger);font-size:14px;padding:2px 4px;flex-shrink:0;}
-
-  .gh-field{margin-bottom:10px;}
-  .gh-field label{display:block;font-size:12px;color:var(--ink-soft);margin-bottom:4px;}
-  .gh-field input{width:100%;border:1px solid var(--line);border-radius:8px;padding:9px 10px;font-size:13.5px;font-family:'IBM Plex Mono',monospace;}
-  .gh-note{font-size:11.5px;color:var(--ink-faint);margin-top:6px;line-height:1.5;}
-  .gh-actions{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;}
-  .gh-actions button{border:none;border-radius:9px;padding:9px 14px;font-size:13px;font-weight:600;}
-  .btn-primary{background:var(--accent);color:#fff;}
-  .btn-ghost{background:var(--accent-soft);color:var(--accent);}
-  .gh-status{font-size:12.5px;margin-top:10px;padding:9px 11px;border-radius:9px;background:var(--now-soft);color:#6b4e10;display:none;}
-  .gh-status.show{display:block;}
-  .gh-status.err{background:#F8E1DB;color:var(--danger);}
-  .gh-status.ok{background:var(--accent-soft);color:var(--accent);}
-
-  .save-bar{position:sticky;bottom:-28px;background:var(--bg);padding:14px 0 0;margin-top:4px;}
-  .save-bar button{
-    width:100%;background:var(--accent);color:#fff;border:none;border-radius:12px;
-    padding:14px;font-size:15px;font-weight:700;
+  .grid-meter{
+    display:grid;
+    grid-template-columns:repeat(20,1fr);
+    gap:3px;
+    margin-top:12px;
   }
-  footer.note{text-align:center;color:var(--ink-faint);font-size:11.5px;margin-top:26px;}
+  .cell{
+    aspect-ratio:1;
+    border:1px solid var(--grid-line);
+    border-radius:2px;
+    background:transparent;
+    position:relative;
+  }
+  .cell.filled{
+    background:var(--ai);
+    border-color:var(--ai);
+  }
+  .cell.milestone.filled::after{
+    content:'';
+    position:absolute;inset:3px;
+    border-radius:1px;
+    background:var(--shu);
+    opacity:.55;
+  }
+  .card-foot{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-top:12px;
+  }
+  .last-touch{
+    font-size:11.5px;
+    color:var(--sumi-soft);
+  }
+  .btn{
+    border:none;
+    border-radius:8px;
+    padding:8px 14px;
+    font-size:13px;
+    font-weight:600;
+    cursor:pointer;
+    font-family:'Noto Sans KR',sans-serif;
+  }
+  .btn-primary{background:var(--ai);color:#fff;}
+  .btn-ghost{background:transparent;color:var(--ai);border:1px solid var(--ai-light);}
+  .btn-shu{background:var(--shu);color:#fff;}
+  .fab{
+    position:fixed;
+    bottom:22px; right:20px;
+    width:56px;height:56px;
+    border-radius:50%;
+    background:var(--ai);
+    color:#fff;
+    font-size:28px;
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:0 4px 14px rgba(47,72,88,0.35);
+    border:none;
+    cursor:pointer;
+    z-index:10;
+  }
+  .streak-row{
+    display:flex;
+    align-items:baseline;
+    gap:6px;
+    margin-top:2px;
+  }
+  .streak-num{
+    font-family:'Shippori Mincho B1',serif;
+    font-size:22px;
+    font-weight:800;
+    color:var(--shu);
+  }
+  .streak-label{
+    font-size:11.5px;
+    color:var(--sumi-soft);
+  }
+  .check-grid{
+    display:grid;
+    grid-template-columns:repeat(14,1fr);
+    gap:3px;
+    margin-top:12px;
+  }
+  .check-cell{
+    aspect-ratio:1;
+    border:1px solid var(--grid-line);
+    border-radius:2px;
+    background:transparent;
+    position:relative;
+  }
+  .check-cell.done{
+    background:var(--shu);
+    border-color:var(--shu);
+  }
+  .check-cell.today{
+    box-shadow:0 0 0 2px var(--ai) inset;
+  }
+  .btn-check{
+    background:var(--ai);
+    color:#fff;
+  }
+  .btn-check.checked{
+    background:var(--shu);
+  }
+  .log-toggle{
+    display:flex;
+    gap:8px;
+    margin:16px 0 12px;
+  }
+  .log-toggle-btn{
+    font-size:12.5px;
+    font-weight:600;
+    color:var(--sumi-soft);
+    background:var(--washi-card);
+    border:1px solid var(--line);
+    border-radius:20px;
+    padding:6px 14px;
+    cursor:pointer;
+  }
+  .log-toggle-btn.active{
+    color:#fff;
+    background:var(--ai);
+    border-color:var(--ai);
+  }
+  .material-chip-wrap{
+    display:flex;
+    flex-wrap:wrap;
+    gap:8px;
+    margin:14px 0 16px;
+  }
+  .material-chip{
+    padding:8px 13px;
+    border-radius:8px;
+    border:1px solid var(--line);
+    background:var(--washi-card);
+    font-size:13px;
+    font-weight:600;
+    color:var(--sumi);
+    cursor:pointer;
+  }
+  .material-chip .cnt{
+    opacity:.65;
+    font-weight:500;
+    margin-left:2px;
+  }
+  .material-chip.active{
+    background:var(--ai);
+    color:#fff;
+    border-color:var(--ai);
+  }
+  .log-item{
+    background:var(--washi-card);
+    border:1px solid var(--line);
+    border-left:3px solid var(--ai);
+    border-radius:8px;
+    padding:11px 13px;
+    margin-bottom:9px;
+  }
+  .log-date{
+    font-size:11px;
+    color:var(--sumi-soft);
+    font-weight:600;
+  }
+  .log-body{
+    font-size:13.5px;
+    margin-top:3px;
+  }
+  .log-body b{color:var(--ai);}
+  .log-note{
+    font-size:12.5px;
+    color:var(--sumi-soft);
+    margin-top:4px;
+    font-style:italic;
+  }
+  /* modal */
+  .overlay{
+    position:fixed;inset:0;
+    background:rgba(35,43,47,0.45);
+    display:none;
+    align-items:flex-end;
+    z-index:50;
+  }
+  .overlay.show{display:flex;}
+  .sheet{
+    background:var(--washi-card);
+    width:100%;
+    border-radius:16px 16px 0 0;
+    padding:20px 18px calc(20px + env(safe-area-inset-bottom));
+    max-height:88vh;
+    overflow-y:auto;
+    overflow-x:hidden;
+  }
+  .sheet h3{
+    font-family:'Shippori Mincho B1',serif;
+    margin:0 0 14px;
+    font-size:18px;
+    color:var(--ai);
+  }
+  .field{margin-bottom:12px;}
+  .field label{
+    display:block;
+    font-size:12px;
+    color:var(--sumi-soft);
+    margin-bottom:5px;
+    font-weight:600;
+  }
+  .field input, .field select, .field textarea{
+    width:100%;
+    padding:10px 11px;
+    border:1px solid var(--grid-line);
+    border-radius:8px;
+    font-size:16px;
+    background:#fff;
+    font-family:'Noto Sans KR',sans-serif;
+    color:var(--sumi);
+  }
+  .field textarea{resize:vertical;min-height:50px;}
+  .row2{display:flex;flex-wrap:wrap;gap:10px;}
+  .row2 .field{flex:1 1 130px;min-width:0;}
+  .field input[type="date"]{
+    -webkit-appearance:none;
+    appearance:none;
+    min-width:0;
+    width:100%;
+    max-width:100%;
+    box-sizing:border-box;
+    display:block;
+  }
+  .sheet-actions{
+    display:flex;gap:10px;margin-top:16px;
+  }
+  .sheet-actions .btn{flex:1;padding:12px 0;}
+  .sync-status{
+    text-align:center;
+    font-size:11.5px;
+    color:var(--sumi-soft);
+    padding:6px 0 2px;
+  }
+  .danger-link{
+    color:var(--shu);
+    font-size:12px;
+    text-align:center;
+    display:block;
+    margin-top:14px;
+    cursor:pointer;
+    text-decoration:underline;
+  }
 </style>
 </head>
 <body>
-<div id="app">
 
-  <header class="top">
-    <h1><span class="eyebrow">TIMETABLE</span>태원이의 시간표</h1>
-    <div class="top-actions">
-      <button class="icon-btn" id="openSettingsBtn" title="설정">⚙️</button>
-    </div>
-  </header>
+<header>
+  <div class="hanko" id="hankoBtn">設定<br>settings</div>
+  <p class="kanji-title">原稿帳</p>
+  <p class="sub">일본어 학습 기록 · JLPT N3</p>
+</header>
 
-  <div class="semester-toggle" id="semesterToggle">
-    <button data-sem="1">1학기</button>
-    <button data-sem="2">2학기</button>
-    <button data-sem="summer">여름방학</button>
-    <button data-sem="winter">겨울방학</button>
-  </div>
-
-  <div class="day-tabs" id="dayTabs"></div>
-
-  <div class="date-line" id="dateLine"></div>
-  <div class="override-banner" id="overrideBanner" style="display:none;"></div>
-
-  <div id="scheduleArea"></div>
-
-  <footer class="note">학교 하교시간과 학원 일정은 ⚙️ 설정에서 관리해요.</footer>
+<div class="tabs">
+  <div class="tab active" data-tab="materials">교재 진도</div>
+  <div class="tab" data-tab="logs">기록</div>
 </div>
 
-<div class="modal-backdrop" id="settingsBackdrop" style="display:none;">
-  <div class="modal">
-    <button class="icon-btn close" id="closeSettingsBtn">✕</button>
-    <h2>시간표 설정</h2>
-    <p class="sub">지금 편집 중인 학기: <strong id="editingSemLabel">1학기</strong></p>
-
-    <div class="section">
-      <h3>📅 학기·방학 기간 설정</h3>
-      <p class="gh-note" style="margin:0 0 10px;">매년 날짜가 조금씩 달라지니, 학교에서 안내받은 날짜로 맞춰주세요. 연도는 무시하고 월/일만 사용해요. 겨울방학처럼 중간에 등교 기간을 사이에 두고 방학이 나뉘어 있다면(예: 겨울방학 → 2주 등교 → 학년말방학), "+ 기간 추가"로 구간을 나눠서 각각 넣어주세요.</p>
-      <div id="periodRangeList"></div>
+<main>
+  <div id="view-materials"></div>
+  <div id="view-logs" style="display:none;">
+    <div class="log-toggle" id="logToggle">
+      <span class="log-toggle-btn active" data-mode="date">날짜순</span>
+      <span class="log-toggle-btn" data-mode="material">교재별</span>
     </div>
+    <div id="logListWrap"></div>
+  </div>
+</main>
 
-    <div class="section" id="schoolSection">
-      <h3>🏫 요일별 하교 시간</h3>
-      <div class="school-grid" id="schoolGrid"></div>
+<button class="fab" id="fabBtn">＋</button>
+
+<!-- 교재 추가 모달 -->
+<div class="overlay" id="overlayMaterial">
+  <div class="sheet">
+    <h3 id="materialSheetTitle">教材追加 · 교재 등록</h3>
+    <div class="field">
+      <label>이름</label>
+      <input type="text" id="mName" placeholder="예: 다이스키 일본어 N3, Duolingo">
     </div>
-    <p class="gh-note" id="vacationNote" style="display:none;margin:-6px 0 14px;">방학 기간에는 보통 등교하지 않으니 학교 시간은 생략했어요. 방학특강 등으로 등원 시간이 있다면 위 학기 탭에서 대신 학원 항목으로 추가해도 좋아요.</p>
-
-    <div class="section">
-      <h3>🎒 학원 시간표</h3>
-      <p class="gh-note" style="margin:-4px 0 10px;">같은 과목이라도 요일마다 시간이 다르면, 요일별로 항목을 따로 추가해주세요. (예: 수학 월 15:00~16:00, 수학 수 16:30~18:00 → 2개 항목)</p>
-      <div id="academyList"></div>
-      <button class="add-row-btn" id="addAcademyBtn">+ 학원 일정 추가</button>
-    </div>
-
-    <div class="section">
-      <h3>📌 보강 수업</h3>
-      <p class="gh-note" style="margin:0 0 10px;">특정 날짜 하루만 있는 보강처럼, 평소 학원 시간표와 별개로 그날만 추가되는 수업을 등록하세요. 그 날짜가 되면 원래 시간표에 자동으로 함께 표시돼요 (다른 날엔 영향 없어요).</p>
-      <div id="makeupList"></div>
-      <button class="add-row-btn" id="addMakeupBtn">+ 보강 추가</button>
-    </div>
-
-    <div class="section">
-      <h3>🗓️ 특정 기간 임시 일정</h3>
-      <p class="gh-note" style="margin:0 0 10px;">방학 중 다른 학원은 쉬고 아이만 며칠~한 주 정도 다른 프로그램에 참여하는 경우, 또는 개학 후 학원이 잠깐 방학하는 경우처럼, 평소 학원 시간표와 다르게 적용할 기간을 등록하세요. 시작~종료 날짜(실제 연도 포함) 동안에는 위 학원 시간표 대신 여기 등록한 일정이 우선 표시돼요. 학교 수업 칸은 이 기간과 상관없이 실제 학기·방학 설정을 그대로 따라가요 — 예를 들어 개학 후 학원만 방학한다면, 여기엔 아무 일정도 추가하지 말고 저장하면 학교 수업만 나오고 학원은 빠져요.</p>
-      <div id="overrideList"></div>
-      <button class="add-row-btn" id="addOverrideBtn">+ 임시 일정 추가</button>
-    </div>
-
-    <div class="section">
-      <h3>🐙 GitHub 연동</h3>
-      <div class="gh-field">
-        <label>GitHub 사용자명</label>
-        <input type="text" id="ghUser" placeholder="예: hunsak">
+    <div class="row2">
+      <div class="field">
+        <label>유형</label>
+        <select id="mType">
+          <option value="책">책 · 교재</option>
+          <option value="앱">앱</option>
+          <option value="강의">강의</option>
+        </select>
       </div>
-      <div class="gh-field">
-        <label>저장소 이름</label>
-        <input type="text" id="ghRepo" placeholder="예: kids-schedule">
+      <div class="field">
+        <label>추적 방식</label>
+        <select id="mTrackMode" onchange="toggleTrackModeFields()">
+          <option value="progress">진도율 (분량 기준)</option>
+          <option value="check">매일 체크 (했다/안했다)</option>
+        </select>
       </div>
-      <div class="gh-field">
-        <label>Personal Access Token</label>
-        <input type="password" id="ghToken" placeholder="repo 권한이 있는 토큰">
-      </div>
-      <p class="gh-note">토큰은 이 브라우저에만 저장되고, GitHub API 요청에만 사용돼요. 다른 곳으로 전송되지 않아요. Settings → Developer settings → Fine-grained tokens 에서 해당 저장소에 대해 Contents: Read and write 권한으로 발급하면 돼요.</p>
-      <div class="gh-actions">
-        <button class="btn-primary" id="ghDeployBtn">저장소 만들고 배포하기</button>
-        <button class="btn-ghost" id="ghPullBtn">GitHub에서 불러오기</button>
-      </div>
-      <div class="gh-status" id="ghStatus"></div>
-      <p class="gh-note" id="ghPagesLink"></p>
     </div>
+    <div id="progressFields">
+      <div class="row2">
+        <div class="field">
+          <label>단위</label>
+          <input type="text" id="mUnitLabel" placeholder="페이지 / 과 / 챕터" value="페이지">
+        </div>
+      </div>
+      <div class="row2">
+        <div class="field">
+          <label>전체 분량</label>
+          <input type="number" id="mTotal" placeholder="예: 320" min="1">
+        </div>
+        <div class="field">
+          <label>현재까지 진도</label>
+          <input type="number" id="mCurrent" placeholder="0" value="0" min="0">
+        </div>
+      </div>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="editingMaterialId=null;closeSheet('overlayMaterial')">취소</button>
+      <button class="btn btn-primary" onclick="saveMaterial()" id="materialSaveBtn">등록</button>
+    </div>
+    <span class="danger-link" id="materialDeleteLink" style="display:none;" onclick="deleteMaterial()">이 교재 삭제 (기록도 함께 삭제됨)</span>
+  </div>
+</div>
 
-    <div class="save-bar">
-      <button id="saveSettingsBtn">저장하고 닫기</button>
+<!-- 기록 추가 모달 -->
+<div class="overlay" id="overlayLog">
+  <div class="sheet">
+    <h3>記録 · 오늘 공부 기록</h3>
+    <div class="field">
+      <label>교재</label>
+      <select id="lMaterial"></select>
     </div>
+    <div class="field">
+      <label>날짜</label>
+      <input type="date" id="lDate">
+    </div>
+    <div class="field" id="lToUnitField">
+      <label>진도 (여기까지)</label>
+      <input type="number" id="lToUnit" min="0">
+    </div>
+    <div class="field">
+      <label>메모 (선택)</label>
+      <textarea id="lNote" placeholder="오늘 공부한 내용, 헷갈렸던 문법 등"></textarea>
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="closeSheet('overlayLog')">취소</button>
+      <button class="btn btn-shu" onclick="saveLog()">기록하기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 설정 모달 -->
+<div class="overlay" id="overlaySettings">
+  <div class="sheet">
+    <h3>設定 · GitHub 동기화 설정</h3>
+    <div class="field">
+      <label>GitHub 사용자명</label>
+      <input type="text" id="sOwner" placeholder="hunsak">
+    </div>
+    <div class="field">
+      <label>저장소 이름</label>
+      <input type="text" id="sRepo" placeholder="jp-study">
+    </div>
+    <div class="field">
+      <label>데이터 파일 경로</label>
+      <input type="text" id="sPath" placeholder="data.json" value="data.json">
+    </div>
+    <div class="field">
+      <label>Personal Access Token (이 기기에만 저장됨)</label>
+      <input type="password" id="sToken" placeholder="ghp_...">
+    </div>
+    <div class="sheet-actions">
+      <button class="btn btn-ghost" onclick="closeSheet('overlaySettings')">닫기</button>
+      <button class="btn btn-primary" onclick="saveSettings()">저장 &amp; 동기화</button>
+    </div>
+    <div class="sync-status" id="syncStatus"></div>
+    <span class="danger-link" onclick="resetAll()">이 기기의 설정/데이터 초기화</span>
   </div>
 </div>
 
 <script>
-/* ---------- 상수 ---------- */
+// ---------- 상태 ----------
+let data = { materials: [], logs: [] };
+let sha = null;
+let settings = JSON.parse(localStorage.getItem('jpStudySettings') || 'null');
+let editingMaterialId = null;
+let logViewMode = 'date';
+let logMaterialFilter = null;
 
-/* ---------- PWA 리소스 ---------- */
-const ICON_512_B64 = "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";
-const ICON_192_B64 = "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";
-const ICON_180_B64 = "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LKne5CbUG3EoNMZjybjf47tj+G+uHjAEAIQUDOtm86zyeCyhp0Jev9tZ200diEiSVEUjX/z0ncfemB1LVPrd3qyKjh+X7H3tjoohhdft0Y30hLlPXD/lvpVbNygvRMhavY5qnPzgv//Zc+zwD1YuAYAah6RU1WzlYazcuuH6KfdNmPuEbqS9bk/9UgbUx8L4KuocCYQ+Xbt82eY11w78xcjzL1ObCqqnUuOFHmkjnUglazxgVhWZOWMccfeBonmfvP38oreSeioSCAkp6+M8QP0TBxzayzPkCwgp/vXuv1/74sPLz7ng2oFDm0Yaw8GHJGtga9R2Kif6X8qCIDKGCIjfF+99ftGC17/4aH9ZScgXCPkC9cL3PCr1UhwK1fNHguFkOjX9vfmvffHRiH4XDe09sEOzVoAcDhoLOiGVVN82KU0AIGeMIweAzbsLFyxb9OqSDw6UlwQ8vkgwrGqW1+jLZQX1WBwKQwiOPBIIp/TUjPfmz1n4Rv8uvQZ37/vzs/r7XB51jJSSgABQvdw1szoEAESSCIAQkB3SRGUq8d6KxQtXf7l4/VeptO5zeSKBsBCy/nYYVdR7cQAAARlCcM7DvoAk+nj1sg9XfjHj/fn9Ovfq2qJtv85n5odyDz9eSAFwsCAKAqr9ItVGSWoLLSIioEOSAnUwZxwQ+SFp7S8rWbLh63U7tizZ8NXWPTs5436P1+N0SaIGIAtFQxCHgogEEQAEvD4E/P7A3tkfvQFABTn5nZq37tm6U5eW7To3b5PjDx6xLQEAcM4RIKmnopUVB8cayI+oOiSlLI2Vb9i5df32b1du27hx57ai0v0A6HE6c/whJSZRTwIY1aSexTmqjwqagRqD6ElDCLfT5fd4WxU0L8iJtGzU9IxWHQxhhP2hri3bEgEirPnum5379pzZpnOT3EYEsH7HlmisTOPamsLN2/d9X1RaXFi0M5aIJ/WUxrnH6XZoDgCoR0GtE6XBiqMKte8fAhJJQwo9ndYNQxkHSdLjcDfOiagjPS63U3PEU8m0kQaAvaXFiXRSKYwInJrmdDg0xhEZgWUbCJlJwzErmTj8KXJkXpfH51b2ggBQktx/aMtFKUklaKlIicvp9LjchwrcqfNISQQm7nhiLQ1fHIdDAETyiNJ8yjoc5WAiM3e+yUJOLXEclQZvHWpMPZtbsTETWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2GbHFYZMRWxw2Gfk/nL7kgcyxcUkAAAAASUVORK5CYII=";
-const MANIFEST_OBJ = {
-  name: "태원이의 시간표",
-  short_name: "태원 시간표",
-  start_url: "./",
-  scope: "./",
-  display: "standalone",
-  background_color: "#EEF0E9",
-  theme_color: "#2F6B4F",
-  icons: [
-    { src:"./icon-192.png", sizes:"192x192", type:"image/png" },
-    { src:"./icon-512.png", sizes:"512x512", type:"image/png", purpose:"any maskable" }
-  ]
-};
-const SW_JS_SOURCE = `
-const CACHE_NAME = 'taewon-schedule-v2';
-const CORE_ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
+const MILESTONES = [4,9,14,19]; // 20칸 그리드에서 25/50/75/100% 표시용 index
 
-self.addEventListener('install', (event) => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then((cache) => cache.addAll(CORE_ASSETS)).catch(()=>{})
-  );
-  self.skipWaiting();
+// ---------- 초기화 ----------
+document.getElementById('lDate').value = new Date().toISOString().slice(0,10);
+
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click', ()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    const target = t.dataset.tab;
+    document.getElementById('view-materials').style.display = target==='materials' ? '' : 'none';
+    document.getElementById('view-logs').style.display = target==='logs' ? '' : 'none';
+  });
 });
 
-self.addEventListener('activate', (event) => {
-  event.waitUntil(
-    caches.keys().then((keys) => Promise.all(
-      keys.filter((k) => k !== CACHE_NAME).map((k) => caches.delete(k))
-    ))
-  );
-  self.clients.claim();
+document.getElementById('hankoBtn').addEventListener('click', ()=>{
+  if(settings){
+    document.getElementById('sOwner').value = settings.owner || '';
+    document.getElementById('sRepo').value = settings.repo || '';
+    document.getElementById('sPath').value = settings.path || 'data.json';
+    document.getElementById('sToken').value = settings.token || '';
+  }
+  openSheet('overlaySettings');
 });
 
-self.addEventListener('fetch', (event) => {
-  // 항상 브라우저 HTTP 캐시를 건너뛰고 진짜 네트워크로 다시 물어봐서,
-  // 다른 기기에서 방금 바꾼 최신 내용을 곧바로 받아오도록 함
-  event.respondWith(
-    fetch(event.request, { cache: 'no-store' }).then((res) => {
-      const resClone = res.clone();
-      caches.open(CACHE_NAME).then((cache) => cache.put(event.request, resClone));
-      return res;
-    }).catch(() => caches.match(event.request))
-  );
+document.getElementById('fabBtn').addEventListener('click', ()=>{
+  const activeTab = document.querySelector('.tab.active').dataset.tab;
+  if(activeTab === 'materials'){
+    editingMaterialId = null;
+    document.getElementById('materialSheetTitle').textContent = '教材追加 · 교재 등록';
+    document.getElementById('materialSaveBtn').textContent = '등록';
+    document.getElementById('materialDeleteLink').style.display = 'none';
+    document.getElementById('mName').value='';
+    document.getElementById('mType').value='책';
+    document.getElementById('mTrackMode').value='progress';
+    document.getElementById('mUnitLabel').value='페이지';
+    document.getElementById('mTotal').value='';
+    document.getElementById('mCurrent').value='0';
+    toggleTrackModeFields();
+    openSheet('overlayMaterial');
+  } else {
+    if(data.materials.length===0){
+      alert('먼저 교재를 등록해주세요.');
+      return;
+    }
+    const sel = document.getElementById('lMaterial');
+    sel.innerHTML = data.materials.map(m=>`<option value="${m.id}">${escapeHtml(m.name)}</option>`).join('');
+    document.getElementById('lDate').value = new Date().toISOString().slice(0,10);
+    document.getElementById('lNote').value='';
+    updateLogDefaultUnit();
+    openSheet('overlayLog');
+  }
 });
-`;
+
+document.getElementById('lMaterial').addEventListener('change', updateLogDefaultUnit);
+document.querySelectorAll('.log-toggle-btn').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('.log-toggle-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    logViewMode = btn.dataset.mode;
+    renderLogs();
+  });
+});
+function updateLogDefaultUnit(){
+  const m = data.materials.find(x=>x.id===document.getElementById('lMaterial').value);
+  const isCheck = m && m.trackMode==='check';
+  document.getElementById('lToUnitField').style.display = isCheck ? 'none' : '';
+  document.getElementById('lToUnit').value = (m && !isCheck) ? m.currentUnit : 0;
+}
+
+function openSheet(id){ document.getElementById(id).classList.add('show'); }
+function closeSheet(id){ document.getElementById(id).classList.remove('show'); }
+
+function toggleTrackModeFields(){
+  const mode = document.getElementById('mTrackMode').value;
+  document.getElementById('progressFields').style.display = mode==='check' ? 'none' : '';
+}
+
+// ---------- 렌더링 ----------
+function render(){
+  renderMaterials();
+  renderLogs();
+}
+
+function renderMaterials(){
+  const el = document.getElementById('view-materials');
+  if(data.materials.length===0){
+    el.innerHTML = `<div class="empty">아직 등록된 교재가 없어요.<br>오른쪽 아래 ＋ 버튼으로 첫 교재를 등록해보세요.</div>`;
+    return;
+  }
+  el.innerHTML = data.materials.map(m=>{
+    return m.trackMode === 'check' ? checkCardHtml(m) : progressCardHtml(m);
+  }).join('');
+}
+
+function progressCardHtml(m){
+  const pct = m.totalUnits>0 ? Math.min(100, Math.round((m.currentUnit/m.totalUnits)*100)) : 0;
+  const filledCells = Math.round(pct/5);
+  let cells = '';
+  for(let i=0;i<20;i++){
+    const filled = i < filledCells;
+    const isMilestone = MILESTONES.includes(i);
+    cells += `<div class="cell ${filled?'filled':''} ${isMilestone?'milestone':''}"></div>`;
+  }
+  const lastLog = data.logs.filter(l=>l.materialId===m.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
+  const lastTxt = lastLog ? `마지막 기록 ${daysAgoText(lastLog.date)}` : '아직 기록 없음';
+  return `
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-title">${escapeHtml(m.name)}</div>
+          <span class="badge">${escapeHtml(m.type)}</span>
+        </div>
+        <div class="percent">${pct}%</div>
+      </div>
+      <div class="unit-line">${m.currentUnit} / ${m.totalUnits} ${escapeHtml(m.unitLabel)}</div>
+      <div class="grid-meter">${cells}</div>
+      <div class="card-foot">
+        <span class="last-touch">${lastTxt}</span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="editMaterial('${m.id}')">수정</button>
+          <button class="btn btn-primary" onclick="quickLog('${m.id}')">기록</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function checkCardHtml(m){
+  const checkedDates = new Set(data.logs.filter(l=>l.materialId===m.id).map(l=>l.date));
+  const streak = calcStreak(checkedDates);
+  const todayStr = new Date().toISOString().slice(0,10);
+  const isCheckedToday = checkedDates.has(todayStr);
+
+  // 최근 14일 (오늘 포함, 왼쪽이 과거)
+  let cells = '';
+  for(let i=13;i>=0;i--){
+    const d = new Date();
+    d.setDate(d.getDate()-i);
+    const dStr = d.toISOString().slice(0,10);
+    const done = checkedDates.has(dStr);
+    const isToday = dStr===todayStr;
+    cells += `<div class="check-cell ${done?'done':''} ${isToday?'today':''}"></div>`;
+  }
+
+  const lastLog = data.logs.filter(l=>l.materialId===m.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
+  const lastTxt = lastLog ? `마지막 체크 ${daysAgoText(lastLog.date)}` : '아직 체크 없음';
+
+  return `
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-title">${escapeHtml(m.name)}</div>
+          <span class="badge">${escapeHtml(m.type)}</span>
+        </div>
+        <div class="streak-row">
+          <span class="streak-num">${streak}</span>
+          <span class="streak-label">일 연속</span>
+        </div>
+      </div>
+      <div class="check-grid">${cells}</div>
+      <div class="card-foot">
+        <span class="last-touch">${lastTxt}</span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="editMaterial('${m.id}')">수정</button>
+          <button class="btn btn-check ${isCheckedToday?'checked':''}" onclick="toggleTodayCheck('${m.id}')">${isCheckedToday?'오늘 완료 ✓':'오늘 체크'}</button>
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function calcStreak(checkedDatesSet){
+  let streak = 0;
+  const d = new Date();
+  // 오늘 체크 안 했으면 어제부터 세기 시작 (오늘 아직 안 해서 스트릭 끊긴 걸로 보이지 않게)
+  if(!checkedDatesSet.has(d.toISOString().slice(0,10))){
+    d.setDate(d.getDate()-1);
+  }
+  while(checkedDatesSet.has(d.toISOString().slice(0,10))){
+    streak++;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+
+function toggleTodayCheck(materialId){
+  const todayStr = new Date().toISOString().slice(0,10);
+  const existing = data.logs.find(l=>l.materialId===materialId && l.date===todayStr);
+  if(existing){
+    data.logs = data.logs.filter(l=>l!==existing);
+  } else {
+    data.logs.push({ id:'l_'+Date.now(), materialId, date: todayStr, fromUnit:0, toUnit:1, note:'' });
+  }
+  render();
+  syncToGitHub();
+}
+
+function renderLogs(){
+  const el = document.getElementById('logListWrap');
+  if(data.logs.length===0){
+    el.innerHTML = `<div class="empty">기록이 아직 없어요.<br>교재 진도를 등록하면 여기 쌓여요.</div>`;
+    return;
+  }
+  if(logViewMode === 'material'){
+    renderLogsByMaterial(el);
+  } else {
+    renderLogsByDate(el);
+  }
+}
+
+function renderLogsByDate(el){
+  const sorted = [...data.logs].sort((a,b)=>b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+  el.innerHTML = sorted.map(l=> logItemHtml(l)).join('');
+}
+
+function renderLogsByMaterial(el){
+  const matsWithLogs = data.materials.filter(m=> data.logs.some(l=>l.materialId===m.id));
+  const orphanedLogs = data.logs.filter(l=>!data.materials.find(m=>m.id===l.materialId));
+  if(matsWithLogs.length===0 && orphanedLogs.length===0){
+    el.innerHTML = `<div class="empty">기록이 없어요.</div>`;
+    return;
+  }
+  const validFilterIds = matsWithLogs.map(m=>m.id).concat(orphanedLogs.length>0 ? ['__orphaned__'] : []);
+  if(!logMaterialFilter || !validFilterIds.includes(logMaterialFilter)){
+    logMaterialFilter = validFilterIds[0];
+  }
+  let chips = matsWithLogs.map(m=>{
+    const count = data.logs.filter(l=>l.materialId===m.id).length;
+    return `<span class="material-chip ${m.id===logMaterialFilter?'active':''}" onclick="selectLogMaterial('${m.id}')">${escapeHtml(m.name)}<span class="cnt">${count}</span></span>`;
+  }).join('');
+  if(orphanedLogs.length>0){
+    chips += `<span class="material-chip ${logMaterialFilter==='__orphaned__'?'active':''}" onclick="selectLogMaterial('__orphaned__')">(삭제된 교재)<span class="cnt">${orphanedLogs.length}</span></span>`;
+  }
+  const logs = logMaterialFilter==='__orphaned__' ? orphanedLogs : data.logs.filter(l=>l.materialId===logMaterialFilter);
+  const sorted = [...logs].sort((a,b)=>b.date.localeCompare(a.date) || b.id.localeCompare(a.id));
+  const listHtml = sorted.map(l=>logItemHtml(l, true)).join('') || `<div class="empty">아직 기록이 없어요.</div>`;
+  el.innerHTML = `<div class="material-chip-wrap">${chips}</div>${listHtml}`;
+}
+
+function selectLogMaterial(id){
+  logMaterialFilter = id;
+  renderLogs();
+}
+
+function logItemHtml(l, hideMaterialName){
+  const m = data.materials.find(x=>x.id===l.materialId);
+  const mName = m ? m.name : '(삭제된 교재)';
+  let progressTxt;
+  if(m && m.trackMode === 'check'){
+    progressTxt = '오늘 학습 완료 ✓';
+  } else {
+    const delta = l.toUnit - l.fromUnit;
+    const deltaTxt = delta>0 ? `+${delta}` : `${delta}`;
+    progressTxt = `${l.fromUnit} → ${l.toUnit} (${deltaTxt})`;
+  }
+  const bodyMain = hideMaterialName
+    ? progressTxt
+    : `<b>${escapeHtml(mName)}</b> · ${progressTxt}`;
+  return `
+    <div class="log-item">
+      <div class="log-date">${formatDate(l.date)}</div>
+      <div class="log-body">${bodyMain}</div>
+      ${l.note ? `<div class="log-note">${escapeHtml(l.note)}</div>` : ''}
+    </div>
+  `;
+}
+
+function quickLog(materialId){
+  const sel = document.getElementById('lMaterial');
+  sel.innerHTML = data.materials.map(m=>`<option value="${m.id}" ${m.id===materialId?'selected':''}>${escapeHtml(m.name)}</option>`).join('');
+  document.getElementById('lDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('lNote').value='';
+  updateLogDefaultUnit();
+  openSheet('overlayLog');
+}
+
+function editMaterial(materialId){
+  const m = data.materials.find(x=>x.id===materialId);
+  if(!m) return;
+  editingMaterialId = materialId;
+  document.getElementById('materialSheetTitle').textContent = '教材編集 · 교재 수정';
+  document.getElementById('materialSaveBtn').textContent = '저장';
+  document.getElementById('materialDeleteLink').style.display = 'block';
+  document.getElementById('mName').value = m.name;
+  document.getElementById('mType').value = m.type;
+  document.getElementById('mTrackMode').value = m.trackMode || 'progress';
+  document.getElementById('mUnitLabel').value = m.unitLabel || '페이지';
+  document.getElementById('mTotal').value = m.totalUnits || '';
+  document.getElementById('mCurrent').value = m.currentUnit || 0;
+  toggleTrackModeFields();
+  openSheet('overlayMaterial');
+}
+
+function deleteMaterial(){
+  if(!editingMaterialId) return;
+  if(!confirm('이 교재와 관련된 기록을 모두 삭제할까요? 되돌릴 수 없어요.')) return;
+  data.materials = data.materials.filter(x=>x.id!==editingMaterialId);
+  data.logs = data.logs.filter(x=>x.materialId!==editingMaterialId);
+  editingMaterialId = null;
+  closeSheet('overlayMaterial');
+  render();
+  syncToGitHub();
+}
+
+// ---------- 저장 로직 ----------
+function saveMaterial(){
+  const name = document.getElementById('mName').value.trim();
+  const type = document.getElementById('mType').value;
+  const trackMode = document.getElementById('mTrackMode').value;
+
+  if(!name){
+    alert('이름을 입력해주세요.');
+    return;
+  }
+
+  let unitLabel = null, total = null, current = 0;
+  if(trackMode === 'progress'){
+    unitLabel = document.getElementById('mUnitLabel').value.trim() || '페이지';
+    total = parseInt(document.getElementById('mTotal').value);
+    current = parseInt(document.getElementById('mCurrent').value) || 0;
+    if(!total || total<=0){
+      alert('전체 분량을 입력해주세요.');
+      return;
+    }
+    current = Math.min(current, total);
+  }
+
+  if(editingMaterialId){
+    const m = data.materials.find(x=>x.id===editingMaterialId);
+    if(m){
+      m.name = name;
+      m.type = type;
+      m.trackMode = trackMode;
+      m.unitLabel = unitLabel;
+      m.totalUnits = total;
+      m.currentUnit = current;
+    }
+    editingMaterialId = null;
+  } else {
+    data.materials.push({
+      id: 'm_'+Date.now(),
+      name, type, trackMode,
+      unitLabel, totalUnits: total, currentUnit: current,
+      addedDate: new Date().toISOString().slice(0,10)
+    });
+  }
+  closeSheet('overlayMaterial');
+  render();
+  syncToGitHub();
+}
+
+function saveLog(){
+  const materialId = document.getElementById('lMaterial').value;
+  const date = document.getElementById('lDate').value;
+  const note = document.getElementById('lNote').value.trim();
+  const m = data.materials.find(x=>x.id===materialId);
+  if(!m || !date){
+    alert('교재와 날짜를 확인해주세요.');
+    return;
+  }
+  if(m.trackMode === 'check'){
+    // 같은 날짜 기록이 이미 있으면 메모만 덮어쓰기
+    const existing = data.logs.find(l=>l.materialId===materialId && l.date===date);
+    if(existing){
+      existing.note = note;
+    } else {
+      data.logs.push({ id:'l_'+Date.now(), materialId, date, fromUnit:0, toUnit:1, note });
+    }
+  } else {
+    const toUnit = parseInt(document.getElementById('lToUnit').value);
+    if(isNaN(toUnit)){
+      alert('진도를 입력해주세요.');
+      return;
+    }
+    const fromUnit = m.currentUnit;
+    data.logs.push({ id:'l_'+Date.now(), materialId, date, fromUnit, toUnit, note });
+    m.currentUnit = Math.max(0, Math.min(toUnit, m.totalUnits));
+  }
+  closeSheet('overlayLog');
+  render();
+  syncToGitHub();
+}
+
+// ---------- GitHub Contents API 동기화 ----------
+function saveSettings(){
+  settings = {
+    owner: document.getElementById('sOwner').value.trim(),
+    repo: document.getElementById('sRepo').value.trim(),
+    path: document.getElementById('sPath').value.trim() || 'data.json',
+    token: document.getElementById('sToken').value.trim()
+  };
+  if(!settings.owner || !settings.repo || !settings.token){
+    alert('사용자명, 저장소, 토큰을 모두 입력해주세요.');
+    return;
+  }
+  localStorage.setItem('jpStudySettings', JSON.stringify(settings));
+  loadFromGitHub();
+}
+
+function resetAll(){
+  if(confirm('이 기기에 저장된 설정을 모두 지울까요? (원격 데이터는 삭제되지 않습니다)')){
+    localStorage.removeItem('jpStudySettings');
+    location.reload();
+  }
+}
+
+function apiUrl(){
+  return `https://api.github.com/repos/${settings.owner}/${settings.repo}/contents/${settings.path}`;
+}
+
+async function loadFromGitHub(){
+  if(!settings) return;
+  setSyncStatus('불러오는 중...');
+  try{
+    const res = await fetch(apiUrl(), {
+      headers: { Authorization: `token ${settings.token}` }
+    });
+    if(res.status===404){
+      data = { materials: [], logs: [] };
+      sha = null;
+      setSyncStatus('새 데이터 파일로 시작합니다.');
+      render();
+      return;
+    }
+    if(!res.ok) throw new Error('GitHub 응답 오류: '+res.status);
+    const json = await res.json();
+    sha = json.sha;
+    const decoded = decodeURIComponent(escape(atob(json.content)));
+    data = JSON.parse(decoded);
+    if(!data.materials) data.materials=[];
+    if(!data.logs) data.logs=[];
+    setSyncStatus('동기화 완료 ✓');
+    closeSheet('overlaySettings');
+    render();
+  }catch(e){
+    console.error(e);
+    setSyncStatus('불러오기 실패: '+e.message);
+  }
+}
+
+async function syncToGitHub(){
+  if(!settings){ return; }
+  setSyncStatus('저장 중...');
+  try{
+    const content = btoa(unescape(encodeURIComponent(JSON.stringify(data, null, 2))));
+    const body = {
+      message: `update ${new Date().toISOString()}`,
+      content,
+    };
+    if(sha) body.sha = sha;
+    const res = await fetch(apiUrl(), {
+      method: 'PUT',
+      headers: {
+        Authorization: `token ${settings.token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)
+    });
+    if(!res.ok){
+      const err = await res.json().catch(()=>({}));
+      throw new Error(err.message || res.status);
+    }
+    const json = await res.json();
+    sha = json.content.sha;
+    setSyncStatus('저장 완료 ✓ '+new Date().toLocaleTimeString('ko-KR'));
+  }catch(e){
+    console.error(e);
+    setSyncStatus('저장 실패: '+e.message);
+  }
+}
+
+function setSyncStatus(msg){
+  const el = document.getElementById('syncStatus');
+  if(el) el.textContent = msg;
+}
+
+// ---------- 유틸 ----------
+function escapeHtml(str){
+  return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function formatDate(d){
+  const dt = new Date(d+'T00:00:00');
+  return `${dt.getMonth()+1}월 ${dt.getDate()}일`;
+}
+function daysAgoText(d){
+  const diff = Math.floor((new Date().setHours(0,0,0,0) - new Date(d+'T00:00:00').setHours(0,0,0,0)) / 86400000);
+  if(diff===0) return '오늘';
+  if(diff===1) return '어제';
+  return `${diff}일 전`;
+}
+
+// ---------- 시작 ----------
+if(settings){
+  loadFromGitHub();
+} else {
+  setTimeout(()=>{
+    alert('먼저 우측 상단 설정(印) 버튼에서 GitHub 저장소 정보를 입력해주세요.');
+    document.getElementById('hankoBtn').click();
+  }, 300);
+}
 
 if('serviceWorker' in navigator){
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('./sw.js').catch(()=>{});
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
   });
 }
-
-const DAYS = [
-  {key:'mon', kr:'월', en:'MON', idx:1},
-  {key:'tue', kr:'화', en:'TUE', idx:2},
-  {key:'wed', kr:'수', en:'WED', idx:3},
-  {key:'thu', kr:'목', en:'THU', idx:4},
-  {key:'fri', kr:'금', en:'FRI', idx:5},
-];
-const SUBJECT_COLORS = ['#3B6FA0','#C4623A','#7A5C9E','#2F8C82','#B0503A','#4C7A3F'];
-const STORAGE_KEY = 'kids-schedule-data-v1';
-const GH_KEY = 'kids-schedule-gh-v1';
-
-function emptySemester(){
-  const school = {};
-  DAYS.forEach(d=> school[d.key] = '');
-  return { school, academy: [] };
-}
-function defaultData(){
-  return {
-    semesters: { '1': emptySemester(), '2': emptySemester(), 'summer': emptySemester(), 'winter': emptySemester() },
-    periodRanges: { '1':[{start:'',end:''}], '2':[{start:'',end:''}], 'summer':[{start:'',end:''}], 'winter':[{start:'',end:''}] },
-    overrides: [],
-    makeups: [],
-    updatedAt: 0
-  };
-}
-function normalizeRanges(v){
-  // 이전 버전(단일 {start,end} 객체)과 신버전(배열) 둘 다 처리
-  if(Array.isArray(v)) return v.length ? v.map(r=>({start:r.start||'', end:r.end||''})) : [{start:'',end:''}];
-  if(v && typeof v==='object') return [{start:v.start||'', end:v.end||''}];
-  return [{start:'',end:''}];
-}
-function ensurePeriodsExist(){
-  // 이전 버전 데이터(방학 기간·날짜범위·임시 일정 없음)를 열었을 때 누락된 항목을 채워줌
-  ['1','2','summer','winter'].forEach(k=>{
-    if(!data.semesters[k]) data.semesters[k] = emptySemester();
-  });
-  if(!data.periodRanges) data.periodRanges = {};
-  ['1','2','summer','winter'].forEach(k=>{
-    data.periodRanges[k] = normalizeRanges(data.periodRanges[k]);
-  });
-  if(!Array.isArray(data.overrides)) data.overrides = [];
-  data.overrides.forEach(o=>{ if(!Array.isArray(o.academy)) o.academy = []; });
-  if(!Array.isArray(data.makeups)) data.makeups = [];
-  if(typeof data.updatedAt !== 'number') data.updatedAt = 0;
-}
-const SEM_LABELS = {'1':'1학기','2':'2학기','summer':'여름방학','winter':'겨울방학'};
-
-/* ---------- 상태 ---------- */
-let data = loadData();
-ensurePeriodsExist();
-let ghConf = loadGh();
-let currentSemester = '1'; // 실제 값은 init()에서 원격 설정 반영 후 재계산
-let currentDay = todayKey() || 'mon';
-
-function loadData(){
-  try{
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if(raw) return JSON.parse(raw);
-  }catch(e){}
-  return defaultData();
-}
-function saveData(){
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
-}
-function loadGh(){
-  try{
-    const raw = localStorage.getItem(GH_KEY);
-    if(raw) return JSON.parse(raw);
-  }catch(e){}
-  return {user:'hunsak', repo:'taewonschedule', token:''};
-}
-function saveGh(){
-  localStorage.setItem(GH_KEY, JSON.stringify(ghConf));
-}
-function monthDay(dateStr){
-  return dateStr ? dateStr.slice(5) : ''; // "YYYY-MM-DD" -> "MM-DD"
-}
-function todayMonthDay(){
-  const d = new Date();
-  return String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-}
-function inMonthDayRange(today, start, end){
-  if(!start || !end) return false;
-  if(start<=end) return today>=start && today<=end;
-  return today>=start || today<=end; // 연말~연초처럼 걸쳐있는 경우(겨울방학 등)
-}
-function guessSemesterByMonth(){
-  const m = new Date().getMonth()+1;
-  if(m===7 || m===8) return 'summer';
-  if(m===12 || m===1 || m===2) return 'winter';
-  return (m>=3 && m<=6) ? '1' : '2';
-}
-function determinePeriod(){
-  const today = todayMonthDay();
-  const order = ['1','summer','2','winter'];
-  for(const k of order){
-    const ranges = data.periodRanges[k] || [];
-    for(const r of ranges){
-      if(inMonthDayRange(today, monthDay(r.start), monthDay(r.end))) return k;
-    }
-  }
-  return guessSemesterByMonth(); // 기간을 아직 설정 안 했다면 대략적인 월 기준으로 추정
-}
-function todayKey(){
-  const d = new Date().getDay(); // 0 Sun .. 6 Sat
-  const found = DAYS.find(x=>x.idx===d);
-  return found ? found.key : null;
-}
-
-/* ---------- 렌더: 학기 토글 ---------- */
-function renderSemesterToggle(){
-  document.querySelectorAll('#semesterToggle button').forEach(btn=>{
-    btn.classList.toggle('active', btn.dataset.sem === currentSemester);
-  });
-}
-document.getElementById('semesterToggle').addEventListener('click', (e)=>{
-  const btn = e.target.closest('button[data-sem]');
-  if(!btn) return;
-  currentSemester = btn.dataset.sem;
-  renderSemesterToggle();
-  renderSchedule(true);
-});
-
-/* ---------- 렌더: 요일 탭 ---------- */
-function renderDayTabs(){
-  const wrap = document.getElementById('dayTabs');
-  const tKey = todayKey();
-  wrap.innerHTML = DAYS.map(d=>`
-    <button class="day-tab ${d.key===currentDay?'active':''} ${d.key===tKey?'today':''}" data-day="${d.key}">
-      <span class="kr">${d.kr}</span><span class="en">${d.en}</span>
-    </button>`).join('');
-  wrap.querySelectorAll('.day-tab').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      currentDay = btn.dataset.day;
-      renderDayTabs();
-      renderSchedule(true);
-    });
-  });
-}
-
-/* ---------- 스케줄 계산 ---------- */
-function timeToMin(t){
-  if(!t) return null;
-  const [h,m] = t.split(':').map(Number);
-  return h*60+m;
-}
-function minToLabel(min){
-  const h = Math.floor(min/60), m = min%60;
-  return String(h).padStart(2,'0')+':'+String(m).padStart(2,'0');
-}
-function formatDuration(min){
-  const h = Math.floor(min/60), m = min%60;
-  if(h>0 && m>0) return `${h}시간 ${m}분`;
-  if(h>0) return `${h}시간`;
-  return `${m}분`;
-}
-const SCHOOL_START_MIN = 8*60+30; // 등교 시각 고정: 08:30
-
-function todayISO(){
-  const d = new Date();
-  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-}
-function findActiveOverride(){
-  const today = todayISO();
-  return (data.overrides||[]).find(o=> o.start && o.end && today>=o.start && today<=o.end) || null;
-}
-function dateForDayKeyThisWeek(dayKey){
-  // 선택된 요일 탭이 이번 주(오늘 기준 월~일) 중 어느 실제 날짜에 해당하는지 계산
-  const targetIdx = DAYS.find(d=>d.key===dayKey).idx; // 1(월)~5(금)
-  const today = new Date();
-  const todayIdx = today.getDay(); // 0(일)~6(토)
-  const diff = targetIdx - todayIdx;
-  const d = new Date(today.getFullYear(), today.getMonth(), today.getDate()+diff);
-  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
-}
-
-function buildDayBlocks(dayKey, semKey){
-  const override = findActiveOverride();
-  const sem = data.semesters[semKey];
-  const isSemester = (semKey==='1' || semKey==='2');
-  const dismissal = isSemester ? sem.school[dayKey] : '';
-  const blocks = [];
-  let prevEnd = null;
-
-  if(dismissal){
-    const endMin = timeToMin(dismissal);
-    blocks.push({type:'school', start:SCHOOL_START_MIN, end:endMin, label:'학교 수업', rangeLabel:'08:30 – '+dismissal});
-    prevEnd = endMin;
-  }
-
-  // 임시 일정(override)이 있으면 학원 목록만 그걸로 교체 (학교 수업은 항상 실제 학기 설정을 따름)
-  const academySource = override ? override.academy : sem.academy;
-
-  // 특정 기간 임시 일정(override)이 적용 중일 땐 보강을 따로 섞지 않음 — 그 기간엔 이미 완전히 다른 일정이니까
-  const forDate = dateForDayKeyThisWeek(dayKey);
-  const makeupEntries = (!override && Array.isArray(data.makeups))
-    ? data.makeups.filter(m=> m.date===forDate && m.start && m.end && m.subject)
-    : [];
-
-  const combined = academySource
-    .filter(a=>a.days.includes(dayKey) && a.start && a.end)
-    .filter(a=> !(a.pauseStart && a.pauseEnd && forDate>=a.pauseStart && forDate<=a.pauseEnd))
-    .map(a=>({...a, _kind:'academy'}))
-    .concat(makeupEntries.map(m=>({...m, _kind:'makeup'})))
-    .sort((a,b)=> timeToMin(a.start)-timeToMin(b.start));
-
-  combined.forEach(a=>{
-    const s = timeToMin(a.start), e = timeToMin(a.end);
-    if(prevEnd!==null && s>prevEnd){
-      blocks.push({type:'free', start:prevEnd, end:s, label:'자유시간', rangeLabel:minToLabel(prevEnd)+' – '+minToLabel(s)});
-    }
-    const isMakeup = a._kind==='makeup';
-    const label = isMakeup ? `${a.subject}<span class="makeup-badge">보강</span>` : a.subject;
-    blocks.push({type: isMakeup ? 'makeup' : 'academy', start:s, end:e, label, rangeLabel:a.start+' – '+a.end, color:a.color});
-    prevEnd = (prevEnd===null) ? e : Math.max(prevEnd, e);
-  });
-
-  return blocks;
-}
-function nowMinIfToday(dayKey){
-  if(dayKey !== todayKey()) return null;
-  const n = new Date();
-  return n.getHours()*60+n.getMinutes();
-}
-
-/* ---------- 렌더: 스케줄 화면 ---------- */
-function renderDateLine(){
-  const d = DAYS.find(x=>x.key===currentDay);
-  const override = findActiveOverride();
-  const label = override ? (override.name || '임시 일정') : SEM_LABELS[currentSemester];
-  document.getElementById('dateLine').textContent = `${label} · ${d.en} SCHEDULE`;
-  const banner = document.getElementById('overrideBanner');
-  if(override){
-    banner.style.display = '';
-    banner.textContent = `🗓️ 임시 일정 적용 중 (${override.start} ~ ${override.end}): ${override.name||'임시 일정'}`;
-  } else {
-    banner.style.display = 'none';
-  }
-}
-function renderSchedule(scrollToNow){
-  renderDateLine();
-  const area = document.getElementById('scheduleArea');
-  const blocks = buildDayBlocks(currentDay, currentSemester);
-
-  if(blocks.length===0){
-    area.innerHTML = `
-      <div class="empty-state">
-        <div class="glyph">🗓️</div>
-        <div>${DAYS.find(x=>x.key===currentDay).kr}요일 시간표가 아직 없어요.</div>
-        <button id="emptyOpenSettings">설정에서 추가하기</button>
-      </div>`;
-    document.getElementById('emptyOpenSettings').addEventListener('click', openSettings);
-    return;
-  }
-
-  const nowMin = nowMinIfToday(currentDay);
-  area.innerHTML = `<div class="timeline">${blocks.map(b=>{
-    const isNow = nowMin!==null && b.start!==null && nowMin>=b.start && nowMin<b.end;
-    const startLabel = b.start===null ? '' : minToLabel(b.start);
-    const style = b.color ? `style="--subject-color:${b.color}"` : '';
-    const durLabel = b.start!==null ? `<span class="dur"> · ${formatDuration(b.end-b.start)}</span>` : '';
-    let fillPct = 0;
-    if(isNow){
-      fillPct = Math.min(100, Math.max(0, ((nowMin-b.start)/(b.end-b.start))*100));
-    }
-    return `
-      <div class="block ${b.type} ${isNow?'now':''}" ${style}>
-        <div class="time">${startLabel}</div>
-        <div class="dot"></div>
-        <div class="card">
-          <div class="fill" style="height:${fillPct}%"></div>
-          <span class="label">${b.label}</span>${isNow?'<span class="tag">지금</span>':''}
-          <div class="range">${b.rangeLabel}${durLabel}</div>
-        </div>
-      </div>`;
-  }).join('')}</div>`;
-
-  if(scrollToNow){
-    requestAnimationFrame(()=>{
-      const nowEl = area.querySelector('.block.now');
-      if(nowEl){
-        nowEl.scrollIntoView({behavior:'smooth', block:'center'});
-      }
-    });
-  }
-}
-
-/* ---------- 설정 모달 ---------- */
-function renderPeriodRangeList(){
-  const wrap = document.getElementById('periodRangeList');
-  const order = ['1','2','summer','winter'];
-  wrap.innerHTML = order.map(k=>{
-    const ranges = data.periodRanges[k];
-    const rowsHtml = ranges.map((r,i)=>`
-        <div class="period-range-row" data-key="${k}" data-idx="${i}">
-          <input type="date" class="pr-start" value="${r.start||''}">
-          <span class="tilde">~</span>
-          <input type="date" class="pr-end" value="${r.end||''}">
-          ${ranges.length>1 ? '<button type="button" class="pr-del">✕</button>' : ''}
-        </div>`).join('');
-    return `
-      <div class="period-block" data-key="${k}">
-        <div class="period-block-header">
-          <span class="plabel">${SEM_LABELS[k]}</span>
-          <button type="button" class="pr-add" data-key="${k}">+ 기간 추가</button>
-        </div>
-        ${rowsHtml}
-      </div>`;
-  }).join('');
-
-  wrap.querySelectorAll('.period-range-row').forEach(row=>{
-    const k = row.dataset.key, idx = Number(row.dataset.idx);
-    row.querySelector('.pr-start').addEventListener('change', e=>{ data.periodRanges[k][idx].start = e.target.value; });
-    row.querySelector('.pr-end').addEventListener('change', e=>{ data.periodRanges[k][idx].end = e.target.value; });
-    const delBtn = row.querySelector('.pr-del');
-    if(delBtn){
-      delBtn.addEventListener('click', ()=>{
-        data.periodRanges[k].splice(idx,1);
-        renderPeriodRangeList();
-      });
-    }
-  });
-  wrap.querySelectorAll('.pr-add').forEach(btn=>{
-    btn.addEventListener('click', ()=>{
-      data.periodRanges[btn.dataset.key].push({start:'',end:''});
-      renderPeriodRangeList();
-    });
-  });
-}
-function openSettings(){
-  document.getElementById('editingSemLabel').textContent = SEM_LABELS[currentSemester];
-  renderPeriodRangeList();
-  renderSchoolGrid();
-  renderAcademyList();
-  renderMakeupList();
-  renderOverrideList();
-  const isVacation = currentSemester==='summer' || currentSemester==='winter';
-  document.getElementById('schoolSection').style.display = isVacation ? 'none' : '';
-  document.getElementById('vacationNote').style.display = isVacation ? '' : 'none';
-  document.getElementById('ghUser').value = ghConf.user||'';
-  document.getElementById('ghRepo').value = ghConf.repo||'';
-  document.getElementById('ghToken').value = ghConf.token||'';
-  updatePagesLink();
-  document.getElementById('settingsBackdrop').style.display='flex';
-}
-function closeSettings(){
-  document.getElementById('settingsBackdrop').style.display='none';
-}
-document.getElementById('openSettingsBtn').addEventListener('click', openSettings);
-document.getElementById('closeSettingsBtn').addEventListener('click', closeSettings);
-document.getElementById('settingsBackdrop').addEventListener('click', (e)=>{
-  if(e.target.id==='settingsBackdrop') closeSettings();
-});
-
-function renderSchoolGrid(){
-  const sem = data.semesters[currentSemester];
-  const grid = document.getElementById('schoolGrid');
-  grid.innerHTML = DAYS.map(d=>`
-    <div>
-      <label>${d.kr}</label>
-      <input type="time" data-day="${d.key}" value="${sem.school[d.key]||''}">
-    </div>`).join('');
-  grid.querySelectorAll('input').forEach(inp=>{
-    inp.addEventListener('change', ()=>{
-      sem.school[inp.dataset.day] = inp.value;
-    });
-  });
-}
-
-function academyRowHtml(a, idx){
-  const hasPause = !!(a.pauseStart || a.pauseEnd);
-  return `
-      <div class="academy-row" data-idx="${idx}">
-        <div class="row1">
-          <input type="text" class="a-subject" placeholder="예: 수학, 영어, 피아노" value="${a.subject||''}">
-          <input type="color" class="a-color" value="${a.color||SUBJECT_COLORS[idx%SUBJECT_COLORS.length]}">
-        </div>
-        <div class="days">
-          ${DAYS.map(d=>`<div class="day-chip ${a.days.includes(d.key)?'on':''}" data-day="${d.key}">${d.kr}</div>`).join('')}
-        </div>
-        <div class="row3">
-          <input type="time" class="a-start" value="${a.start||''}">
-          <span class="tilde">~</span>
-          <input type="time" class="a-end" value="${a.end||''}">
-          <button type="button" class="del-btn">삭제</button>
-        </div>
-        <label class="pause-toggle">
-          <input type="checkbox" class="a-pause-toggle" ${hasPause?'checked':''}>
-          <span>이 학원이 쉬는 기간이 있어요</span>
-        </label>
-        <div class="row4 pause-fields" style="display:${hasPause?'flex':'none'};">
-          <input type="date" class="a-pause-start" value="${a.pauseStart||''}">
-          <span class="tilde">~</span>
-          <input type="date" class="a-pause-end" value="${a.pauseEnd||''}">
-        </div>
-      </div>`;
-}
-function renderAcademyRowsInto(containerEl, list, rerenderFn){
-  if(list.length===0){
-    containerEl.innerHTML = `<p class="gh-note" style="margin-bottom:10px;">아직 등록된 일정이 없어요. 아래 버튼으로 추가해보세요.</p>`;
-  } else {
-    containerEl.innerHTML = list.map((a,i)=>academyRowHtml(a,i)).join('');
-  }
-  containerEl.querySelectorAll('.academy-row').forEach(row=>{
-    const idx = Number(row.dataset.idx);
-    const a = list[idx];
-    row.querySelector('.a-subject').addEventListener('input', e=> a.subject = e.target.value);
-    row.querySelector('.a-color').addEventListener('input', e=> a.color = e.target.value);
-    row.querySelector('.a-start').addEventListener('change', e=> a.start = e.target.value);
-    row.querySelector('.a-end').addEventListener('change', e=> a.end = e.target.value);
-    row.querySelectorAll('.day-chip').forEach(chip=>{
-      chip.addEventListener('click', ()=>{
-        const dk = chip.dataset.day;
-        if(a.days.includes(dk)){
-          a.days = a.days.filter(x=>x!==dk);
-        } else {
-          a.days.push(dk);
-        }
-        chip.classList.toggle('on');
-      });
-    });
-    const pauseFields = row.querySelector('.pause-fields');
-    row.querySelector('.a-pause-toggle').addEventListener('change', e=>{
-      if(e.target.checked){
-        pauseFields.style.display = 'flex';
-      } else {
-        pauseFields.style.display = 'none';
-        a.pauseStart = '';
-        a.pauseEnd = '';
-        row.querySelector('.a-pause-start').value = '';
-        row.querySelector('.a-pause-end').value = '';
-      }
-    });
-    row.querySelector('.a-pause-start').addEventListener('change', e=> a.pauseStart = e.target.value);
-    row.querySelector('.a-pause-end').addEventListener('change', e=> a.pauseEnd = e.target.value);
-    row.querySelector('.del-btn').addEventListener('click', ()=>{
-      list.splice(idx,1);
-      rerenderFn();
-    });
-  });
-}
-function renderAcademyList(){
-  const sem = data.semesters[currentSemester];
-  renderAcademyRowsInto(document.getElementById('academyList'), sem.academy, renderAcademyList);
-}
-document.getElementById('addAcademyBtn').addEventListener('click', ()=>{
-  const sem = data.semesters[currentSemester];
-  sem.academy.push({subject:'', color:SUBJECT_COLORS[sem.academy.length%SUBJECT_COLORS.length], days:[], start:'', end:''});
-  renderAcademyList();
-});
-
-/* ---------- 임시 일정(특정 기간 한정 스케줄) ---------- */
-/* ---------- 보강 수업(특정 날짜 하루 추가) ---------- */
-function renderMakeupList(){
-  const wrap = document.getElementById('makeupList');
-  if(!data.makeups.length){
-    wrap.innerHTML = `<p class="gh-note" style="margin-bottom:10px;">등록된 보강이 없어요.</p>`;
-    return;
-  }
-  wrap.innerHTML = data.makeups.map((m,i)=>`
-    <div class="academy-row makeup-row" data-idx="${i}">
-      <div class="row1">
-        <input type="text" class="mk-subject" placeholder="예: 수학 보강" value="${m.subject||''}">
-        <input type="color" class="mk-color" value="${m.color||SUBJECT_COLORS[i%SUBJECT_COLORS.length]}">
-      </div>
-      <div class="row3">
-        <input type="date" class="mk-date" value="${m.date||''}">
-        <input type="time" class="mk-start" value="${m.start||''}">
-        <span class="tilde">~</span>
-        <input type="time" class="mk-end" value="${m.end||''}">
-        <button type="button" class="del-btn">삭제</button>
-      </div>
-    </div>
-  `).join('');
-  wrap.querySelectorAll('.makeup-row').forEach(row=>{
-    const idx = Number(row.dataset.idx);
-    const m = data.makeups[idx];
-    row.querySelector('.mk-subject').addEventListener('input', e=> m.subject = e.target.value);
-    row.querySelector('.mk-color').addEventListener('input', e=> m.color = e.target.value);
-    row.querySelector('.mk-date').addEventListener('change', e=> m.date = e.target.value);
-    row.querySelector('.mk-start').addEventListener('change', e=> m.start = e.target.value);
-    row.querySelector('.mk-end').addEventListener('change', e=> m.end = e.target.value);
-    row.querySelector('.del-btn').addEventListener('click', ()=>{
-      data.makeups.splice(idx,1);
-      renderMakeupList();
-    });
-  });
-}
-document.getElementById('addMakeupBtn').addEventListener('click', ()=>{
-  data.makeups.push({date:'', subject:'', color:SUBJECT_COLORS[data.makeups.length%SUBJECT_COLORS.length], start:'', end:''});
-  renderMakeupList();
-});
-
-function renderOverrideList(){
-  const wrap = document.getElementById('overrideList');
-  if(!data.overrides.length){
-    wrap.innerHTML = `<p class="gh-note" style="margin-bottom:10px;">등록된 임시 일정이 없어요.</p>`;
-    return;
-  }
-  wrap.innerHTML = data.overrides.map((o,i)=>`
-    <div class="override-card" data-idx="${i}">
-      <div class="row1">
-        <input type="text" class="ov-name" placeholder="예: 청소년센터 프로그램 주간" value="${o.name||''}">
-        <button type="button" class="del-btn ov-del">삭제</button>
-      </div>
-      <div class="row2">
-        <input type="date" class="ov-start" value="${o.start||''}">
-        <span class="tilde">~</span>
-        <input type="date" class="ov-end" value="${o.end||''}">
-      </div>
-      <div class="ov-academy-list" id="ovAcademyList-${i}"></div>
-      <button type="button" class="add-row-btn ov-add-academy">+ 일정 추가</button>
-    </div>
-  `).join('');
-
-  data.overrides.forEach((o,i)=>{
-    const card = wrap.querySelector(`.override-card[data-idx="${i}"]`);
-    card.querySelector('.ov-name').addEventListener('input', e=> o.name = e.target.value);
-    card.querySelector('.ov-start').addEventListener('change', e=> o.start = e.target.value);
-    card.querySelector('.ov-end').addEventListener('change', e=> o.end = e.target.value);
-    card.querySelector('.ov-del').addEventListener('click', ()=>{
-      data.overrides.splice(i,1);
-      renderOverrideList();
-    });
-    renderAcademyRowsInto(card.querySelector('.ov-academy-list'), o.academy, renderOverrideList);
-    card.querySelector('.ov-add-academy').addEventListener('click', ()=>{
-      o.academy.push({subject:'', color:SUBJECT_COLORS[o.academy.length%SUBJECT_COLORS.length], days:[], start:'', end:''});
-      renderOverrideList();
-    });
-  });
-}
-document.getElementById('addOverrideBtn').addEventListener('click', ()=>{
-  data.overrides.push({name:'', start:'', end:'', academy:[]});
-  renderOverrideList();
-});
-
-document.getElementById('saveSettingsBtn').addEventListener('click', ()=>{
-  data.updatedAt = Date.now();
-  saveData();
-  currentSemester = determinePeriod();
-  renderSemesterToggle();
-  ghConf.user = document.getElementById('ghUser').value.trim();
-  ghConf.repo = document.getElementById('ghRepo').value.trim();
-  ghConf.token = document.getElementById('ghToken').value.trim();
-  saveGh();
-  renderSchedule(true);
-  if(ghConf.user && ghConf.repo && ghConf.token){
-    pushSettingsToGithub().catch(()=>{});
-  }
-  closeSettings();
-});
-
-/* ---------- GitHub 연동 ---------- */
-function ghStatus(msg, kind){
-  const el = document.getElementById('ghStatus');
-  el.textContent = msg;
-  el.className = 'gh-status show' + (kind?(' '+kind):'');
-}
-function updatePagesLink(){
-  const el = document.getElementById('ghPagesLink');
-  if(ghConf.user && ghConf.repo){
-    const url = `https://${ghConf.user}.github.io/${ghConf.repo}/`;
-    el.innerHTML = `배포 주소: <a href="${url}" target="_blank">${url}</a> (배포 직후에는 반영까지 1~2분 걸릴 수 있어요)`;
-  } else {
-    el.textContent = '';
-  }
-}
-function b64EncodeUnicode(str){
-  return btoa(unescape(encodeURIComponent(str)));
-}
-function b64DecodeUnicode(str){
-  return decodeURIComponent(escape(atob(str)));
-}
-async function ghApi(path, opts={}){
-  const headers = {
-    'Accept':'application/vnd.github+json',
-    ...(opts.headers||{})
-  };
-  if(ghConf.token) headers['Authorization'] = 'token '+ghConf.token;
-  const res = await fetch('https://api.github.com'+path, { ...opts, headers });
-  return res;
-}
-async function getFileSha(path){
-  const res = await ghApi(`/repos/${ghConf.user}/${ghConf.repo}/contents/${path}`);
-  if(res.status===200){
-    const j = await res.json();
-    return j.sha;
-  }
-  return null;
-}
-async function putFile(path, content, message){
-  const sha = await getFileSha(path);
-  const body = { message, content: b64EncodeUnicode(content), branch:'main' };
-  if(sha) body.sha = sha;
-  const res = await ghApi(`/repos/${ghConf.user}/${ghConf.repo}/contents/${path}`, {
-    method:'PUT',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(body)
-  });
-  if(!res.ok){
-    const j = await res.json().catch(()=>({}));
-    throw new Error(j.message || ('업로드 실패: '+res.status));
-  }
-}
-async function putFileRaw(path, base64Content, message){
-  const sha = await getFileSha(path);
-  const body = { message, content: base64Content, branch:'main' };
-  if(sha) body.sha = sha;
-  const res = await ghApi(`/repos/${ghConf.user}/${ghConf.repo}/contents/${path}`, {
-    method:'PUT',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify(body)
-  });
-  if(!res.ok){
-    const j = await res.json().catch(()=>({}));
-    throw new Error(j.message || ('업로드 실패: '+res.status));
-  }
-}
-async function pushSettingsToGithub(){
-  await putFile('settings.json', JSON.stringify(data,null,2), '설정 업데이트');
-}
-async function ensureRepo(){
-  const res = await ghApi('/user/repos', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ name: ghConf.repo, description:'태원이의 시간표', private:false, auto_init:true })
-  });
-  if(res.status===201 || res.status===422) return; // 201 생성됨, 422 이미 존재
-  if(!res.ok){
-    const j = await res.json().catch(()=>({}));
-    throw new Error(j.message || ('저장소 생성 실패: '+res.status));
-  }
-}
-async function ensurePages(){
-  const res = await ghApi(`/repos/${ghConf.user}/${ghConf.repo}/pages`, {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({ build_type:'legacy', source:{branch:'main', path:'/'} })
-  });
-  // 201 생성됨, 409 이미 존재 -> 둘 다 정상 진행
-}
-function captureAppSourceHtml(){
-  // 배포 시점의 화면 상태(모달 열림 등)가 섞이지 않도록 정리 후 캡처
-  const backdrop = document.getElementById('settingsBackdrop');
-  const wasOpen = backdrop.style.display === 'flex';
-  backdrop.style.display = 'none';
-  const html = '<!DOCTYPE html>\n'+document.documentElement.outerHTML;
-  if(wasOpen) backdrop.style.display = 'flex';
-  return html;
-}
-document.getElementById('ghDeployBtn').addEventListener('click', async ()=>{
-  ghConf.user = document.getElementById('ghUser').value.trim();
-  ghConf.repo = document.getElementById('ghRepo').value.trim();
-  ghConf.token = document.getElementById('ghToken').value.trim();
-  saveGh();
-  if(!ghConf.user || !ghConf.repo || !ghConf.token){
-    ghStatus('GitHub 사용자명, 저장소 이름, 토큰을 모두 입력해주세요.', 'err');
-    return;
-  }
-  const steps = [
-    ['저장소 준비', ()=>ensureRepo()],
-    ['페이지 설정', ()=>ensurePages()],
-    ['index.html', ()=>putFile('index.html', captureAppSourceHtml(), '시간표 앱 배포')],
-    ['manifest.json', ()=>putFile('manifest.json', JSON.stringify(MANIFEST_OBJ, null, 2), 'PWA manifest 추가')],
-    ['sw.js', ()=>putFile('sw.js', SW_JS_SOURCE, '서비스워커 추가')],
-    ['icon-192.png', ()=>putFileRaw('icon-192.png', ICON_192_B64, '아이콘 추가')],
-    ['icon-512.png', ()=>putFileRaw('icon-512.png', ICON_512_B64, '아이콘 추가')],
-    ['icon-180.png', ()=>putFileRaw('icon-180.png', ICON_180_B64, '아이콘 추가')],
-    ['settings.json', ()=>pushSettingsToGithub()],
-  ];
-  const failed = [];
-  for(const [label, fn] of steps){
-    ghStatus(label+' 처리 중...');
-    try{
-      await fn();
-    }catch(err){
-      console.error(label, err);
-      failed.push(label+': '+err.message);
-    }
-  }
-  updatePagesLink();
-  if(failed.length===0){
-    ghStatus('배포 완료! 잠시 후 아래 주소로 접속해보세요.', 'ok');
-  } else {
-    ghStatus('일부 실패: '+failed.join(' / ')+' — 다시 눌러서 재시도해보세요.', 'err');
-  }
-});
-document.getElementById('ghPullBtn').addEventListener('click', async ()=>{
-  ghConf.user = document.getElementById('ghUser').value.trim();
-  ghConf.repo = document.getElementById('ghRepo').value.trim();
-  ghConf.token = document.getElementById('ghToken').value.trim();
-  saveGh();
-  if(!ghConf.user || !ghConf.repo){
-    ghStatus('GitHub 사용자명과 저장소 이름을 입력해주세요.', 'err');
-    return;
-  }
-  try{
-    ghStatus('불러오는 중...');
-    const res = await ghApi(`/repos/${ghConf.user}/${ghConf.repo}/contents/settings.json`);
-    if(res.status!==200) throw new Error('settings.json을 찾을 수 없어요.');
-    const j = await res.json();
-    const parsed = JSON.parse(b64DecodeUnicode(j.content));
-    data = parsed;
-    ensurePeriodsExist();
-    saveData();
-    renderPeriodRangeList();
-    renderSchoolGrid();
-    renderAcademyList();
-    renderMakeupList();
-    renderOverrideList();
-    renderSchedule();
-    ghStatus('불러오기 완료!', 'ok');
-  }catch(err){
-    ghStatus('오류: '+err.message, 'err');
-  }
-});
-
-/* 배포된 사이트를 열 때마다 같은 경로의 settings.json을 확인해서, 다른 기기에서 더 최근에 저장한 내용이 있으면 자동으로 반영함 (로컬 파일 실행 시엔 조용히 무시) */
-async function tryAutoLoadLocalSettingsJson(){
-  try{
-    const res = await fetch('./settings.json', {cache:'no-store'});
-    if(res.ok){
-      const parsed = await res.json();
-      const remoteTime = typeof parsed.updatedAt === 'number' ? parsed.updatedAt : 0;
-      const localTime = typeof data.updatedAt === 'number' ? data.updatedAt : 0;
-      if(remoteTime > localTime){
-        data = parsed;
-        saveData();
-      }
-    }
-  }catch(e){ /* 무시 */ }
-}
-
-/* ---------- 초기화 ---------- */
-async function init(){
-  await tryAutoLoadLocalSettingsJson();
-  ensurePeriodsExist();
-  currentSemester = determinePeriod();
-  renderSemesterToggle();
-  renderDayTabs();
-  renderSchedule(true);
-  setInterval(renderSchedule, 60000); // 1분마다 '지금' 표시 갱신 (자동 스크롤은 하지 않음)
-}
-init();
 </script>
 </body>
 </html>
