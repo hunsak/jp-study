@@ -166,6 +166,10 @@
   .academy-row input[type=time]{border:1px solid var(--line);border-radius:8px;padding:7px 8px;font-family:'IBM Plex Mono',monospace;font-size:13px;}
   .makeup-row input[type=date]{border:1px solid var(--line);border-radius:8px;padding:7px 8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;flex-shrink:0;}
   .academy-row .tilde{color:var(--ink-faint);}
+  .pause-toggle{display:flex;align-items:center;gap:6px;margin-top:10px;font-size:12.5px;color:var(--ink-soft);user-select:none;cursor:pointer;}
+  .pause-toggle input[type=checkbox]{width:15px;height:15px;accent-color:var(--accent);}
+  .row4.pause-fields{display:flex;align-items:center;gap:8px;margin-top:8px;}
+  .row4.pause-fields input[type=date]{flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;padding:7px 6px;font-family:'IBM Plex Mono',monospace;font-size:12px;}
   .del-btn{margin-left:auto;border:none;background:none;color:var(--danger);font-size:13px;padding:4px 6px;}
   .add-row-btn{width:100%;border:1px dashed var(--line);background:transparent;border-radius:10px;padding:10px;color:var(--ink-soft);font-size:13.5px;font-weight:600;}
 
@@ -555,6 +559,7 @@ function buildDayBlocks(dayKey, semKey){
 
   const combined = academySource
     .filter(a=>a.days.includes(dayKey) && a.start && a.end)
+    .filter(a=> !(a.pauseStart && a.pauseEnd && forDate>=a.pauseStart && forDate<=a.pauseEnd))
     .map(a=>({...a, _kind:'academy'}))
     .concat(makeupEntries.map(m=>({...m, _kind:'makeup'})))
     .sort((a,b)=> timeToMin(a.start)-timeToMin(b.start));
@@ -723,6 +728,7 @@ function renderSchoolGrid(){
 }
 
 function academyRowHtml(a, idx){
+  const hasPause = !!(a.pauseStart || a.pauseEnd);
   return `
       <div class="academy-row" data-idx="${idx}">
         <div class="row1">
@@ -737,6 +743,15 @@ function academyRowHtml(a, idx){
           <span class="tilde">~</span>
           <input type="time" class="a-end" value="${a.end||''}">
           <button type="button" class="del-btn">삭제</button>
+        </div>
+        <label class="pause-toggle">
+          <input type="checkbox" class="a-pause-toggle" ${hasPause?'checked':''}>
+          <span>이 학원이 쉬는 기간이 있어요</span>
+        </label>
+        <div class="row4 pause-fields" style="display:${hasPause?'flex':'none'};">
+          <input type="date" class="a-pause-start" value="${a.pauseStart||''}">
+          <span class="tilde">~</span>
+          <input type="date" class="a-pause-end" value="${a.pauseEnd||''}">
         </div>
       </div>`;
 }
@@ -764,6 +779,20 @@ function renderAcademyRowsInto(containerEl, list, rerenderFn){
         chip.classList.toggle('on');
       });
     });
+    const pauseFields = row.querySelector('.pause-fields');
+    row.querySelector('.a-pause-toggle').addEventListener('change', e=>{
+      if(e.target.checked){
+        pauseFields.style.display = 'flex';
+      } else {
+        pauseFields.style.display = 'none';
+        a.pauseStart = '';
+        a.pauseEnd = '';
+        row.querySelector('.a-pause-start').value = '';
+        row.querySelector('.a-pause-end').value = '';
+      }
+    });
+    row.querySelector('.a-pause-start').addEventListener('change', e=> a.pauseStart = e.target.value);
+    row.querySelector('.a-pause-end').addEventListener('change', e=> a.pauseEnd = e.target.value);
     row.querySelector('.del-btn').addEventListener('click', ()=>{
       list.splice(idx,1);
       rerenderFn();
