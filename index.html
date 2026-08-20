@@ -255,6 +255,44 @@
   .btn-check.checked{
     background:var(--shu);
   }
+  .completed-wrap{
+    margin:16px 0 4px;
+  }
+  .completed-title{
+    font-family:'Shippori Mincho B1',serif;
+    font-size:13.5px;
+    font-weight:700;
+    color:var(--sumi-soft);
+    margin-bottom:8px;
+  }
+  .completed-card{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    background:var(--washi-card);
+    border:1px solid var(--line);
+    border-left:3px solid var(--shu);
+    border-radius:8px;
+    padding:11px 13px;
+    margin-bottom:8px;
+  }
+  .completed-name{
+    font-size:13.5px;
+    font-weight:600;
+    color:var(--sumi);
+  }
+  .completed-date{
+    font-size:11px;
+    color:var(--sumi-soft);
+    margin-top:2px;
+  }
+  .completed-badge{
+    font-size:11px;
+    font-weight:700;
+    color:var(--shu);
+    white-space:nowrap;
+    margin-right:10px;
+  }
   .log-toggle{
     display:flex;
     gap:8px;
@@ -416,6 +454,7 @@
 <main>
   <div id="view-materials"></div>
   <div id="view-logs" style="display:none;">
+    <div id="completedSection"></div>
     <div class="log-toggle" id="logToggle">
       <span class="log-toggle-btn active" data-mode="date">날짜순</span>
       <span class="log-toggle-btn" data-mode="material">교재별</span>
@@ -623,16 +662,54 @@ function toggleTrackModeFields(){
 // ---------- 렌더링 ----------
 function render(){
   renderMaterials();
+  renderCompletedSection();
   renderLogs();
+}
+
+function isMaterialComplete(m){
+  return m.trackMode !== 'check' && m.totalUnits>0 && m.currentUnit >= m.totalUnits;
+}
+
+function renderCompletedSection(){
+  const el = document.getElementById('completedSection');
+  if(!el) return;
+  const completed = data.materials.filter(isMaterialComplete);
+  if(completed.length===0){
+    el.innerHTML = '';
+    return;
+  }
+  el.innerHTML = `
+    <div class="completed-wrap">
+      <div class="completed-title">完了 · 완료한 교재 (${completed.length})</div>
+      ${completed.map(m=>{
+        const lastLog = data.logs.filter(l=>l.materialId===m.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
+        const dateTxt = lastLog ? `${formatDate(lastLog.date)} 완료` : '완료';
+        return `
+          <div class="completed-card" onclick="editMaterial('${m.id}')">
+            <div>
+              <div class="completed-name">${escapeHtml(m.name)}</div>
+              <div class="completed-date">${dateTxt} · ${m.totalUnits} ${escapeHtml(m.unitLabel||'')}</div>
+            </div>
+            <span class="completed-badge">100% ✓</span>
+          </div>
+        `;
+      }).join('')}
+    </div>
+  `;
 }
 
 function renderMaterials(){
   const el = document.getElementById('view-materials');
-  if(data.materials.length===0){
-    el.innerHTML = `<div class="empty">아직 등록된 교재가 없어요.<br>오른쪽 아래 ＋ 버튼으로 첫 교재를 등록해보세요.</div>`;
+  const active = data.materials.filter(m=>!isMaterialComplete(m));
+  if(active.length===0){
+    if(data.materials.length>0){
+      el.innerHTML = `<div class="empty">진행 중인 교재가 없어요.<br>완료한 교재는 '기록' 탭에서 볼 수 있어요.</div>`;
+    } else {
+      el.innerHTML = `<div class="empty">아직 등록된 교재가 없어요.<br>오른쪽 아래 ＋ 버튼으로 첫 교재를 등록해보세요.</div>`;
+    }
     return;
   }
-  el.innerHTML = data.materials.map(m=>{
+  el.innerHTML = active.map(m=>{
     return m.trackMode === 'check' ? checkCardHtml(m) : progressCardHtml(m);
   }).join('');
 }
