@@ -454,11 +454,12 @@
 <main>
   <div id="view-materials"></div>
   <div id="view-logs" style="display:none;">
-    <div id="completedSection"></div>
     <div class="log-toggle" id="logToggle">
       <span class="log-toggle-btn active" data-mode="date">날짜순</span>
       <span class="log-toggle-btn" data-mode="material">교재별</span>
+      <span class="log-toggle-btn" data-mode="completed">완료한 교재</span>
     </div>
+    <div id="completedSection" style="display:none;"></div>
     <div id="logListWrap"></div>
   </div>
 </main>
@@ -584,7 +585,7 @@ let logMaterialFilter = null;
 const MILESTONES = [4,9,14,19]; // 20칸 그리드에서 25/50/75/100% 표시용 index
 
 // ---------- 초기화 ----------
-document.getElementById('lDate').value = new Date().toISOString().slice(0,10);
+document.getElementById('lDate').value = localDateStr(new Date());
 
 document.querySelectorAll('.tab').forEach(t=>{
   t.addEventListener('click', ()=>{
@@ -628,7 +629,7 @@ document.getElementById('fabBtn').addEventListener('click', ()=>{
     }
     const sel = document.getElementById('lMaterial');
     sel.innerHTML = data.materials.map(m=>`<option value="${m.id}">${escapeHtml(m.name)}</option>`).join('');
-    document.getElementById('lDate').value = new Date().toISOString().slice(0,10);
+    document.getElementById('lDate').value = localDateStr(new Date());
     document.getElementById('lNote').value='';
     updateLogDefaultUnit();
     openSheet('overlayLog');
@@ -675,12 +676,11 @@ function renderCompletedSection(){
   if(!el) return;
   const completed = data.materials.filter(isMaterialComplete);
   if(completed.length===0){
-    el.innerHTML = '';
+    el.innerHTML = `<div class="empty">아직 완료한 교재가 없어요.</div>`;
     return;
   }
   el.innerHTML = `
     <div class="completed-wrap">
-      <div class="completed-title">完了 · 완료한 교재 (${completed.length})</div>
       ${completed.map(m=>{
         const lastLog = data.logs.filter(l=>l.materialId===m.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
         const dateTxt = lastLog ? `${formatDate(lastLog.date)} 완료` : '완료';
@@ -750,7 +750,7 @@ function progressCardHtml(m){
 function checkCardHtml(m){
   const checkedDates = new Set(data.logs.filter(l=>l.materialId===m.id).map(l=>l.date));
   const streak = calcStreak(checkedDates);
-  const todayStr = new Date().toISOString().slice(0,10);
+  const todayStr = localDateStr(new Date());
   const isCheckedToday = checkedDates.has(todayStr);
 
   // 최근 14일 (오늘 포함, 왼쪽이 과거)
@@ -758,7 +758,7 @@ function checkCardHtml(m){
   for(let i=13;i>=0;i--){
     const d = new Date();
     d.setDate(d.getDate()-i);
-    const dStr = d.toISOString().slice(0,10);
+    const dStr = localDateStr(d);
     const done = checkedDates.has(dStr);
     const isToday = dStr===todayStr;
     cells += `<div class="check-cell ${done?'done':''} ${isToday?'today':''}"></div>`;
@@ -795,10 +795,10 @@ function calcStreak(checkedDatesSet){
   let streak = 0;
   const d = new Date();
   // 오늘 체크 안 했으면 어제부터 세기 시작 (오늘 아직 안 해서 스트릭 끊긴 걸로 보이지 않게)
-  if(!checkedDatesSet.has(d.toISOString().slice(0,10))){
+  if(!checkedDatesSet.has(localDateStr(d))){
     d.setDate(d.getDate()-1);
   }
-  while(checkedDatesSet.has(d.toISOString().slice(0,10))){
+  while(checkedDatesSet.has(localDateStr(d))){
     streak++;
     d.setDate(d.getDate()-1);
   }
@@ -806,7 +806,7 @@ function calcStreak(checkedDatesSet){
 }
 
 function toggleTodayCheck(materialId){
-  const todayStr = new Date().toISOString().slice(0,10);
+  const todayStr = localDateStr(new Date());
   const existing = data.logs.find(l=>l.materialId===materialId && l.date===todayStr);
   if(existing){
     data.logs = data.logs.filter(l=>l!==existing);
@@ -818,15 +818,26 @@ function toggleTodayCheck(materialId){
 }
 
 function renderLogs(){
-  const el = document.getElementById('logListWrap');
+  const logListEl = document.getElementById('logListWrap');
+  const completedEl = document.getElementById('completedSection');
+
+  if(logViewMode === 'completed'){
+    logListEl.style.display = 'none';
+    completedEl.style.display = '';
+    renderCompletedSection();
+    return;
+  }
+  logListEl.style.display = '';
+  completedEl.style.display = 'none';
+
   if(data.logs.length===0){
-    el.innerHTML = `<div class="empty">기록이 아직 없어요.<br>교재 진도를 등록하면 여기 쌓여요.</div>`;
+    logListEl.innerHTML = `<div class="empty">기록이 아직 없어요.<br>교재 진도를 등록하면 여기 쌓여요.</div>`;
     return;
   }
   if(logViewMode === 'material'){
-    renderLogsByMaterial(el);
+    renderLogsByMaterial(logListEl);
   } else {
-    renderLogsByDate(el);
+    renderLogsByDate(logListEl);
   }
 }
 
@@ -890,7 +901,7 @@ function logItemHtml(l, hideMaterialName){
 function quickLog(materialId){
   const sel = document.getElementById('lMaterial');
   sel.innerHTML = data.materials.map(m=>`<option value="${m.id}" ${m.id===materialId?'selected':''}>${escapeHtml(m.name)}</option>`).join('');
-  document.getElementById('lDate').value = new Date().toISOString().slice(0,10);
+  document.getElementById('lDate').value = localDateStr(new Date());
   document.getElementById('lNote').value='';
   updateLogDefaultUnit();
   openSheet('overlayLog');
@@ -963,7 +974,7 @@ function saveMaterial(){
       id: 'm_'+Date.now(),
       name, type, trackMode,
       unitLabel, totalUnits: total, currentUnit: current,
-      addedDate: new Date().toISOString().slice(0,10)
+      addedDate: localDateStr(new Date())
     });
   }
   closeSheet('overlayMaterial');
@@ -1097,6 +1108,13 @@ function setSyncStatus(msg){
 }
 
 // ---------- 유틸 ----------
+function localDateStr(d){
+  const dt = d || new Date();
+  const y = dt.getFullYear();
+  const m = String(dt.getMonth()+1).padStart(2,'0');
+  const day = String(dt.getDate()).padStart(2,'0');
+  return `${y}-${m}-${day}`;
+}
 function escapeHtml(str){
   return String(str).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
