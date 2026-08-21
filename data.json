@@ -163,6 +163,14 @@
       "fromUnit": 251,
       "toUnit": 256,
       "note": ""
+    },
+    {
+      "id": "l_1787356089454",
+      "materialId": "m_1787180070547",
+      "date": "2026-08-22",
+      "fromUnit": 0,
+      "toUnit": 1,
+      "note": ""
     }
   ]
 }
