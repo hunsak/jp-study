@@ -50,10 +50,11 @@
       "id": "m_1787094388373",
       "name": "일본어 사전",
       "type": "책",
-      "unitLabel": "페이지",
+      "unitLabel": "단어",
       "totalUnits": 48000,
       "currentUnit": 0,
-      "addedDate": "2026-08-18"
+      "addedDate": "2026-08-18",
+      "trackMode": "progress"
     },
     {
       "id": "m_1787094594627",
