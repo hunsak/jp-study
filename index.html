@@ -405,6 +405,10 @@
     font-family:'Noto Sans KR',sans-serif;
     color:var(--sumi);
   }
+  .field input::placeholder, .field textarea::placeholder{
+    color:var(--sumi-soft);
+    opacity:0.55;
+  }
   .field textarea{resize:vertical;min-height:50px;}
   .row2{display:flex;flex-wrap:wrap;gap:10px;}
   .row2 .field{flex:1 1 130px;min-width:0;}
@@ -649,7 +653,9 @@ function updateLogDefaultUnit(){
   const m = data.materials.find(x=>x.id===document.getElementById('lMaterial').value);
   const isCheck = m && m.trackMode==='check';
   document.getElementById('lToUnitField').style.display = isCheck ? 'none' : '';
-  document.getElementById('lToUnit').value = (m && !isCheck) ? m.currentUnit : 0;
+  const input = document.getElementById('lToUnit');
+  input.value = '';
+  input.placeholder = (m && !isCheck) ? `현재 ${m.currentUnit}` : '';
 }
 
 function openSheet(id){ document.getElementById(id).classList.add('show'); }
