@@ -53,7 +53,7 @@
       "type": "책",
       "unitLabel": "단어",
       "totalUnits": 48000,
-      "currentUnit": 0,
+      "currentUnit": 1,
       "addedDate": "2026-08-18",
       "trackMode": "progress"
     },
@@ -261,6 +261,14 @@
       "fromUnit": 103,
       "toUnit": 106,
       "note": ""
+    },
+    {
+      "id": "l_1787666534115",
+      "materialId": "m_1787094388373",
+      "date": "2026-08-25",
+      "fromUnit": 0,
+      "toUnit": 1,
+      "note": "つま"
     }
   ]
 }
