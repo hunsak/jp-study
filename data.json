@@ -6,7 +6,7 @@
       "type": "앱",
       "unitLabel": "장기기억단어",
       "totalUnits": 11664,
-      "currentUnit": 263,
+      "currentUnit": 267,
       "addedDate": "2026-08-17"
     },
     {
@@ -309,6 +309,14 @@
       "fromUnit": 1,
       "toUnit": 2,
       "note": "都合（つごう）사정, 형편"
+    },
+    {
+      "id": "l_1787750907413",
+      "materialId": "m_1787006425577",
+      "date": "2026-08-26",
+      "fromUnit": 263,
+      "toUnit": 267,
+      "note": ""
     }
   ]
 }
