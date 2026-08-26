@@ -53,7 +53,7 @@
       "type": "책",
       "unitLabel": "단어",
       "totalUnits": 48000,
-      "currentUnit": 1,
+      "currentUnit": 2,
       "addedDate": "2026-08-18",
       "trackMode": "progress"
     },
@@ -301,6 +301,14 @@
       "fromUnit": 106,
       "toUnit": 112,
       "note": ""
+    },
+    {
+      "id": "l_1787750717479",
+      "materialId": "m_1787094388373",
+      "date": "2026-08-26",
+      "fromUnit": 1,
+      "toUnit": 2,
+      "note": "都合（つごう）사정, 형편"
     }
   ]
 }
