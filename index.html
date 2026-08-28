@@ -212,6 +212,39 @@
     cursor:pointer;
     z-index:10;
   }
+  .song-meter{
+    display:flex;
+    gap:6px;
+    margin-top:12px;
+  }
+  .song-cell{
+    flex:1;
+    aspect-ratio:1;
+    border:1px solid var(--grid-line);
+    border-radius:6px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-size:13px;
+    font-weight:700;
+    color:var(--sumi-soft);
+    background:transparent;
+    cursor:pointer;
+  }
+  .song-cell.filled{
+    background:var(--ai);
+    color:#fff;
+    border-color:var(--ai);
+  }
+  .song-cell.current{
+    box-shadow:0 0 0 2px var(--shu) inset;
+  }
+  .song-stage-label{
+    font-size:12px;
+    color:var(--sumi-soft);
+    margin-top:8px;
+  }
+  .song-stage-label b{color:var(--ai);}
   .streak-row{
     display:flex;
     align-items:baseline;
@@ -485,6 +518,7 @@
           <option value="책">책 · 교재</option>
           <option value="앱">앱</option>
           <option value="강의">강의</option>
+          <option value="노래">노래</option>
         </select>
       </div>
       <div class="field">
@@ -492,6 +526,7 @@
         <select id="mTrackMode" onchange="toggleTrackModeFields()">
           <option value="progress">진도율 (분량 기준)</option>
           <option value="check">매일 체크 (했다/안했다)</option>
+          <option value="song">노래 학습 (5단계)</option>
         </select>
       </div>
     </div>
@@ -511,6 +546,19 @@
           <label>현재까지 진도</label>
           <input type="number" id="mCurrent" placeholder="0" value="0" min="0">
         </div>
+      </div>
+    </div>
+    <div id="songFields" style="display:none;">
+      <div class="field">
+        <label>현재 단계</label>
+        <select id="mSongStage">
+          <option value="0">시작 전</option>
+          <option value="1">1. 가사 이해</option>
+          <option value="2">2. 따라 부르기</option>
+          <option value="3">3. 주요 단어 이해</option>
+          <option value="4">4. 주요 문법 이해</option>
+          <option value="5">5. 전체적으로 암기 (완료)</option>
+        </select>
       </div>
     </div>
     <div class="sheet-actions">
@@ -536,6 +584,17 @@
     <div class="field" id="lToUnitField">
       <label>진도 (여기까지)</label>
       <input type="number" id="lToUnit" min="0">
+    </div>
+    <div class="field" id="lSongStageField" style="display:none;">
+      <label>단계</label>
+      <select id="lSongStage">
+        <option value="0">시작 전</option>
+        <option value="1">1. 가사 이해</option>
+        <option value="2">2. 따라 부르기</option>
+        <option value="3">3. 주요 단어 이해</option>
+        <option value="4">4. 주요 문법 이해</option>
+        <option value="5">5. 전체적으로 암기 (완료)</option>
+      </select>
     </div>
     <div class="field">
       <label>메모 (선택)</label>
@@ -587,6 +646,7 @@ let logViewMode = 'date';
 let logMaterialFilter = null;
 
 const MILESTONES = [4,9,14,19]; // 20칸 그리드에서 25/50/75/100% 표시용 index
+const SONG_STAGES = ['가사 이해', '따라 부르기', '주요 단어 이해', '주요 문법 이해', '전체적으로 암기'];
 
 // ---------- 초기화 ----------
 document.getElementById('lDate').value = localDateStr(new Date());
@@ -624,6 +684,7 @@ document.getElementById('fabBtn').addEventListener('click', ()=>{
     document.getElementById('mUnitLabel').value='페이지';
     document.getElementById('mTotal').value='';
     document.getElementById('mCurrent').value='0';
+    document.getElementById('mSongStage').value='0';
     toggleTrackModeFields();
     openSheet('overlayMaterial');
   } else {
@@ -652,10 +713,15 @@ document.querySelectorAll('.log-toggle-btn').forEach(btn=>{
 function updateLogDefaultUnit(){
   const m = data.materials.find(x=>x.id===document.getElementById('lMaterial').value);
   const isCheck = m && m.trackMode==='check';
-  document.getElementById('lToUnitField').style.display = isCheck ? 'none' : '';
+  const isSong = m && m.trackMode==='song';
+  document.getElementById('lToUnitField').style.display = (isCheck || isSong) ? 'none' : '';
+  document.getElementById('lSongStageField').style.display = isSong ? '' : 'none';
   const input = document.getElementById('lToUnit');
   input.value = '';
-  input.placeholder = (m && !isCheck) ? `현재 ${m.currentUnit}` : '';
+  input.placeholder = (m && !isCheck && !isSong) ? `현재 ${m.currentUnit}` : '';
+  if(isSong){
+    document.getElementById('lSongStage').value = m.currentUnit || 0;
+  }
 }
 
 function openSheet(id){ document.getElementById(id).classList.add('show'); }
@@ -663,7 +729,8 @@ function closeSheet(id){ document.getElementById(id).classList.remove('show'); }
 
 function toggleTrackModeFields(){
   const mode = document.getElementById('mTrackMode').value;
-  document.getElementById('progressFields').style.display = mode==='check' ? 'none' : '';
+  document.getElementById('progressFields').style.display = mode==='progress' ? '' : 'none';
+  document.getElementById('songFields').style.display = mode==='song' ? '' : 'none';
 }
 
 // ---------- 렌더링 ----------
@@ -716,7 +783,9 @@ function renderMaterials(){
     return;
   }
   el.innerHTML = active.map(m=>{
-    return m.trackMode === 'check' ? checkCardHtml(m) : progressCardHtml(m);
+    if(m.trackMode === 'check') return checkCardHtml(m);
+    if(m.trackMode === 'song') return songCardHtml(m);
+    return progressCardHtml(m);
   }).join('');
 }
 
@@ -823,6 +892,63 @@ function toggleTodayCheck(materialId){
   syncToGitHub();
 }
 
+function songStageLabel(n){
+  return n<=0 ? '시작 전' : (SONG_STAGES[n-1] || `${n}단계`);
+}
+
+function songCardHtml(m){
+  const stage = m.currentUnit || 0;
+  let cells = '';
+  for(let i=0;i<SONG_STAGES.length;i++){
+    const filled = i < stage;
+    const isCurrent = i === stage; // 다음에 진행할 단계 강조
+    cells += `<div class="song-cell ${filled?'filled':''} ${isCurrent?'current':''}" onclick="setSongStage('${m.id}', ${i+1})">${i+1}</div>`;
+  }
+  const lastLog = data.logs.filter(l=>l.materialId===m.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
+  const lastTxt = lastLog ? `마지막 진행 ${daysAgoText(lastLog.date)}` : '아직 기록 없음';
+  const nextBtn = stage >= SONG_STAGES.length
+    ? `<button class="btn btn-ghost" disabled>완료 ✓</button>`
+    : `<button class="btn btn-primary" onclick="advanceSongStage('${m.id}')">다음 단계</button>`;
+  return `
+    <div class="card">
+      <div class="card-top">
+        <div>
+          <div class="card-title">${escapeHtml(m.name)}</div>
+          <span class="badge">${escapeHtml(m.type)}</span>
+        </div>
+        <div class="percent">${stage}/${SONG_STAGES.length}</div>
+      </div>
+      <div class="song-meter">${cells}</div>
+      <div class="song-stage-label">현재: <b>${songStageLabel(stage)}</b></div>
+      <div class="card-foot">
+        <span class="last-touch">${lastTxt}</span>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="editMaterial('${m.id}')">수정</button>
+          ${nextBtn}
+        </div>
+      </div>
+    </div>
+  `;
+}
+
+function advanceSongStage(materialId){
+  const m = data.materials.find(x=>x.id===materialId);
+  if(!m) return;
+  setSongStage(materialId, Math.min((m.currentUnit||0)+1, SONG_STAGES.length));
+}
+
+function setSongStage(materialId, newStage){
+  const m = data.materials.find(x=>x.id===materialId);
+  if(!m) return;
+  newStage = Math.max(0, Math.min(newStage, SONG_STAGES.length));
+  if(newStage === m.currentUnit) return;
+  const fromUnit = m.currentUnit || 0;
+  data.logs.push({ id:'l_'+Date.now(), materialId, date: localDateStr(new Date()), fromUnit, toUnit:newStage, note:'' });
+  m.currentUnit = newStage;
+  render();
+  syncToGitHub();
+}
+
 function renderLogs(){
   const logListEl = document.getElementById('logListWrap');
   const completedEl = document.getElementById('completedSection');
@@ -887,6 +1013,8 @@ function logItemHtml(l, hideMaterialName){
   let progressTxt;
   if(m && m.trackMode === 'check'){
     progressTxt = '오늘 학습 완료 ✓';
+  } else if(m && m.trackMode === 'song'){
+    progressTxt = `${songStageLabel(l.fromUnit)} → ${songStageLabel(l.toUnit)}`;
   } else {
     const delta = l.toUnit - l.fromUnit;
     const deltaTxt = delta>0 ? `+${delta}` : `${delta}`;
@@ -926,6 +1054,7 @@ function editMaterial(materialId){
   document.getElementById('mUnitLabel').value = m.unitLabel || '페이지';
   document.getElementById('mTotal').value = m.totalUnits || '';
   document.getElementById('mCurrent').value = m.currentUnit || 0;
+  document.getElementById('mSongStage').value = m.trackMode==='song' ? (m.currentUnit || 0) : 0;
   toggleTrackModeFields();
   openSheet('overlayMaterial');
 }
@@ -962,6 +1091,10 @@ function saveMaterial(){
       return;
     }
     current = Math.min(current, total);
+  } else if(trackMode === 'song'){
+    unitLabel = '단계';
+    total = SONG_STAGES.length;
+    current = parseInt(document.getElementById('mSongStage').value) || 0;
   }
 
   if(editingMaterialId){
@@ -1005,6 +1138,11 @@ function saveLog(){
     } else {
       data.logs.push({ id:'l_'+Date.now(), materialId, date, fromUnit:0, toUnit:1, note });
     }
+  } else if(m.trackMode === 'song'){
+    const toUnit = parseInt(document.getElementById('lSongStage').value);
+    const fromUnit = m.currentUnit || 0;
+    data.logs.push({ id:'l_'+Date.now(), materialId, date, fromUnit, toUnit, note });
+    m.currentUnit = toUnit;
   } else {
     const toUnit = parseInt(document.getElementById('lToUnit').value);
     if(isNaN(toUnit)){
