@@ -75,6 +75,16 @@
       "totalUnits": null,
       "currentUnit": 0,
       "addedDate": "2026-08-19"
+    },
+    {
+      "id": "m_1787899624003",
+      "name": "少女の頃に戻ったみたいに",
+      "type": "노래",
+      "trackMode": "song",
+      "unitLabel": "단계",
+      "totalUnits": 5,
+      "currentUnit": 0,
+      "addedDate": "2026-08-28"
     }
   ],
   "logs": [
