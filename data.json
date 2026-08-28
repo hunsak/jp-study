@@ -95,6 +95,16 @@
       "totalUnits": 5,
       "currentUnit": 2,
       "addedDate": "2026-08-28"
+    },
+    {
+      "id": "m_1787906892451",
+      "name": "ヒロイン",
+      "type": "노래",
+      "trackMode": "song",
+      "unitLabel": "단계",
+      "totalUnits": 5,
+      "currentUnit": 0,
+      "addedDate": "2026-08-28"
     }
   ],
   "logs": [
