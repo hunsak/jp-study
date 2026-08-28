@@ -83,7 +83,7 @@
       "trackMode": "song",
       "unitLabel": "단계",
       "totalUnits": 5,
-      "currentUnit": 3,
+      "currentUnit": 4,
       "addedDate": "2026-08-28"
     }
   ],
@@ -366,6 +366,14 @@
       "date": "2026-08-28",
       "fromUnit": 2,
       "toUnit": 3,
+      "note": ""
+    },
+    {
+      "id": "l_1787899639272",
+      "materialId": "m_1787899624003",
+      "date": "2026-08-28",
+      "fromUnit": 3,
+      "toUnit": 4,
       "note": ""
     }
   ]
