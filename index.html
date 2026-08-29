@@ -225,11 +225,13 @@
     display:flex;
     align-items:center;
     justify-content:center;
-    font-size:13px;
+    font-size:11px;
     font-weight:700;
     color:var(--sumi-soft);
     background:transparent;
     cursor:pointer;
+    text-align:center;
+    padding:2px;
   }
   .song-cell.filled{
     background:var(--ai);
@@ -647,6 +649,7 @@ let logMaterialFilter = null;
 
 const MILESTONES = [4,9,14,19]; // 20칸 그리드에서 25/50/75/100% 표시용 index
 const SONG_STAGES = ['가사 이해', '따라 부르기', '주요 단어 이해', '주요 문법 이해', '전체적으로 암기'];
+const SONG_STAGES_SHORT = ['가사', '낭송', '단어', '문법', '암기'];
 
 // ---------- 초기화 ----------
 document.getElementById('lDate').value = localDateStr(new Date());
@@ -902,7 +905,7 @@ function songCardHtml(m){
   for(let i=0;i<SONG_STAGES.length;i++){
     const filled = i < stage;
     const isCurrent = i === stage; // 다음에 진행할 단계 강조
-    cells += `<div class="song-cell ${filled?'filled':''} ${isCurrent?'current':''}" onclick="setSongStage('${m.id}', ${i+1})">${i+1}</div>`;
+    cells += `<div class="song-cell ${filled?'filled':''} ${isCurrent?'current':''}" onclick="setSongStage('${m.id}', ${i+1})">${SONG_STAGES_SHORT[i]}</div>`;
   }
   const lastLog = data.logs.filter(l=>l.materialId===m.id).sort((a,b)=>b.date.localeCompare(a.date))[0];
   const lastTxt = lastLog ? `마지막 진행 ${daysAgoText(lastLog.date)}` : '아직 기록 없음';
