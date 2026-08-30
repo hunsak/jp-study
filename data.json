@@ -25,7 +25,7 @@
       "type": "책",
       "unitLabel": "페이지",
       "totalUnits": 421,
-      "currentUnit": 117,
+      "currentUnit": 123,
       "addedDate": "2026-08-17"
     },
     {
@@ -537,6 +537,14 @@
       "fromUnit": 2,
       "toUnit": 3,
       "note": "幼 おさない"
+    },
+    {
+      "id": "l_1788091734290",
+      "materialId": "m_1787006538058",
+      "date": "2026-08-30",
+      "fromUnit": 117,
+      "toUnit": 123,
+      "note": ""
     }
   ]
 }
