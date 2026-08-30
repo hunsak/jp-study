@@ -53,7 +53,7 @@
       "type": "책",
       "unitLabel": "단어",
       "totalUnits": 48000,
-      "currentUnit": 2,
+      "currentUnit": 3,
       "addedDate": "2026-08-18",
       "trackMode": "progress"
     },
@@ -529,6 +529,14 @@
       "fromUnit": 23,
       "toUnit": 35,
       "note": ""
+    },
+    {
+      "id": "l_1788090797898",
+      "materialId": "m_1787094388373",
+      "date": "2026-08-30",
+      "fromUnit": 2,
+      "toUnit": 3,
+      "note": "幼 おさない"
     }
   ]
 }
