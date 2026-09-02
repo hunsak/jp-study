@@ -34,7 +34,7 @@
       "type": "책",
       "unitLabel": "페이지",
       "totalUnits": 485,
-      "currentUnit": 127,
+      "currentUnit": 139,
       "addedDate": "2026-08-17",
       "trackMode": "progress"
     },
@@ -586,6 +586,14 @@
       "date": "2026-09-01",
       "fromUnit": 333,
       "toUnit": 343,
+      "note": ""
+    },
+    {
+      "id": "l_1788390440612",
+      "materialId": "m_1787007929500",
+      "date": "2026-09-03",
+      "fromUnit": 127,
+      "toUnit": 139,
       "note": ""
     }
   ]
