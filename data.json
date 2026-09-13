@@ -143,7 +143,7 @@
       "trackMode": "progress",
       "unitLabel": "페이지",
       "totalUnits": 380,
-      "currentUnit": 101,
+      "currentUnit": 113,
       "addedDate": "2026-08-30"
     }
   ],
@@ -650,6 +650,14 @@
       "date": "2026-09-13",
       "fromUnit": 37,
       "toUnit": 39,
+      "note": ""
+    },
+    {
+      "id": "l_1789262249504",
+      "materialId": "m_1788091998315",
+      "date": "2026-09-13",
+      "fromUnit": 101,
+      "toUnit": 113,
       "note": ""
     }
   ]
