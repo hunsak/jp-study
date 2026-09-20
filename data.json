@@ -15,7 +15,7 @@
       "type": "앱",
       "unitLabel": "외운단어기준",
       "totalUnits": 7180,
-      "currentUnit": 150,
+      "currentUnit": 200,
       "addedDate": "2026-08-17",
       "trackMode": "progress"
     },
@@ -674,6 +674,14 @@
       "date": "2026-09-20",
       "fromUnit": 408,
       "toUnit": 418,
+      "note": ""
+    },
+    {
+      "id": "l_1789901139867",
+      "materialId": "m_1787006508335",
+      "date": "2026-09-20",
+      "fromUnit": 150,
+      "toUnit": 200,
       "note": ""
     }
   ]
