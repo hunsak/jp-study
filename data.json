@@ -6,7 +6,7 @@
       "type": "앱",
       "unitLabel": "장기기억단어",
       "totalUnits": 11664,
-      "currentUnit": 464,
+      "currentUnit": 467,
       "addedDate": "2026-08-17"
     },
     {
@@ -738,6 +738,14 @@
       "date": "2026-09-27",
       "fromUnit": 155,
       "toUnit": 160,
+      "note": ""
+    },
+    {
+      "id": "l_1790473853988",
+      "materialId": "m_1787006425577",
+      "date": "2026-09-27",
+      "fromUnit": 464,
+      "toUnit": 467,
       "note": ""
     }
   ]
