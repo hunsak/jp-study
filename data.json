@@ -145,6 +145,16 @@
       "totalUnits": 380,
       "currentUnit": 119,
       "addedDate": "2026-08-30"
+    },
+    {
+      "id": "m_1791365751001",
+      "name": "瞳をとじて",
+      "type": "노래",
+      "trackMode": "song",
+      "unitLabel": "단계",
+      "totalUnits": 5,
+      "currentUnit": 0,
+      "addedDate": "2026-10-07"
     }
   ],
   "logs": [
