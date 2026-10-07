@@ -1,0 +1,655 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0a1425">
+<title>瞳をとじて – 일본어 가사 학습</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Noto+Serif+KR:wght@500;700&family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#101c33;
+    --navy-deep:#0a1425;
+    --snow:#f4f7fb;
+    --ice:#8fb4d6;
+    --rose:#e79a92;
+    --gold:#cda86e;
+    --line:rgba(244,247,251,0.12);
+  }
+  *{box-sizing:border-box;}
+  html{ font-size:18px; background:#0a1425; height:100%; }
+  body{
+    margin:0;
+    min-height:100%;
+    background:var(--navy-deep);
+    color:var(--snow);
+    font-family:'Noto Sans KR',sans-serif;
+    line-height:1.8;
+    position:relative;
+    overflow-x:hidden;
+  }
+  @media(max-width:480px){ html{ font-size:19px; } }
+  .snowlayer{position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;}
+  .flake{
+    position:absolute;top:-10px;
+    background:var(--snow);
+    border-radius:50%;
+    opacity:0.55;
+    animation:fall linear infinite;
+  }
+  @keyframes fall{
+    to{ transform:translateY(110vh) translateX(var(--drift,0px)); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .flake{animation:none;display:none;}
+  }
+  header{
+    position:relative;z-index:1;
+    text-align:center;
+    padding:64px 24px 40px;
+    background:linear-gradient(180deg,var(--navy) 0%,var(--navy-deep) 100%);
+    border-bottom:1px solid var(--line);
+  }
+  h1.jp-title{
+    font-family:'Shippori Mincho',serif;
+    font-size:clamp(2.4rem,6vw,4rem);
+    letter-spacing:0.15em;
+    margin:0;
+    color:var(--snow);
+    text-shadow:0 0 24px rgba(231,154,146,0.25);
+  }
+  .subtitle{
+    font-family:'Noto Serif KR',serif;
+    color:var(--ice);
+    margin-top:10px;
+    font-size:1.05rem;
+    letter-spacing:0.05em;
+  }
+  .toggle-bar{
+    position:relative;z-index:1;
+    display:flex;justify-content:center;gap:12px;flex-wrap:wrap;
+    padding:18px;background:var(--navy);
+    border-bottom:1px solid var(--line);
+    position:sticky;top:0;z-index:5;
+  }
+  button.ui-btn{
+    background:transparent;
+    border:1px solid var(--ice);
+    color:var(--ice);
+    padding:11px 20px;
+    border-radius:999px;
+    font-family:'Noto Sans KR',sans-serif;
+    font-size:0.95rem;
+    cursor:pointer;
+    transition:all .2s ease;
+  }
+  button.ui-btn:hover{background:var(--ice);color:var(--navy-deep);}
+  button.ui-btn.active{background:var(--rose);border-color:var(--rose);color:var(--navy-deep);}
+  main{position:relative;z-index:1;max-width:820px;margin:0 auto;padding:40px 20px 100px;background:var(--navy-deep);color:var(--snow);}
+  section.stanza{
+    margin-bottom:56px;
+    padding-bottom:40px;
+    border-bottom:1px dashed var(--line);
+  }
+  .stanza-label{
+    font-family:'Noto Serif KR',serif;
+    color:var(--gold);
+    font-size:0.8rem;
+    letter-spacing:0.2em;
+    margin-bottom:14px;
+    display:flex;align-items:center;gap:10px;
+  }
+  .stanza-label::before{content:"❄";}
+  .line-block{margin-bottom:18px;}
+  .jp-line{
+    font-family:'Shippori Mincho',serif;
+    font-size:clamp(1.5rem,6vw,1.9rem);
+    letter-spacing:0.02em;
+    line-height:2;
+  }
+  ruby rt{
+    font-family:'Noto Sans KR',sans-serif;
+    font-size:0.5em;
+    color:var(--ice);
+  }
+  body.hide-furigana ruby rt{ display:none; }
+  .kr-line{
+    font-family:'Noto Serif KR',serif;
+    color:#c7d3e6;
+    font-size:1.15rem;
+    margin-top:6px;
+  }
+  body.hide-kr .kr-line{ display:none; }
+  .notes{
+    margin-top:20px;
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:16px;
+  }
+  @media(max-width:640px){ .notes{grid-template-columns:1fr;} }
+  .note-card{
+    background:rgba(244,247,251,0.04);
+    border:1px solid var(--line);
+    border-radius:12px;
+    padding:16px 18px;
+  }
+  .note-card h4{
+    margin:0 0 12px;
+    font-size:0.85rem;
+    letter-spacing:0.15em;
+    color:var(--rose);
+    text-transform:uppercase;
+  }
+  .note-card ul{margin:0;padding-left:0;list-style:none;}
+  .note-card li{margin-bottom:12px;font-size:1.08rem;line-height:1.6;}
+  .note-card .w{color:var(--snow);font-weight:500;}
+  .note-card .w rt{color:var(--gold);font-size:0.55em;}
+  .note-card .m{color:#a9b8cf;font-size:0.92em;}
+
+  /* Section headers */
+  .section-head{
+    text-align:center;margin:80px 0 36px;
+  }
+  .section-head .eyebrow{
+    font-family:'Noto Serif KR',serif;
+    color:var(--gold);letter-spacing:0.3em;font-size:0.75rem;
+  }
+  .section-head h2{
+    font-family:'Shippori Mincho',serif;
+    font-size:2rem;margin:8px 0 0;
+  }
+
+  /* Flashcards */
+  .flash-wrap{display:flex;flex-direction:column;align-items:center;gap:18px;}
+  .flashcard{
+    width:100%;max-width:440px;height:270px;
+    perspective:1200px;cursor:pointer;
+  }
+  .flash-inner{
+    position:relative;width:100%;height:100%;
+    transition:transform .5s;transform-style:preserve-3d;
+  }
+  .flashcard.flipped .flash-inner{transform:rotateY(180deg);}
+  .flash-face{
+    position:absolute;inset:0;
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    backface-visibility:hidden;
+    border-radius:18px;
+    border:1px solid var(--line);
+    padding:20px;text-align:center;
+  }
+  .flash-front{
+    background:linear-gradient(160deg,var(--navy),#152238);
+  }
+  .flash-front .jp-word{font-family:'Shippori Mincho',serif;font-size:clamp(2.2rem,9vw,3rem);line-height:2.1;}
+  .flash-front .jp-word rt{color:var(--ice);font-size:0.4em;}
+  .flash-back{
+    background:linear-gradient(160deg,#22314d,var(--navy));
+    transform:rotateY(180deg);
+  }
+  .flash-back .kr-mean{font-family:'Noto Serif KR',serif;font-size:1.6rem;color:var(--rose);}
+  .flash-back .pos{margin-top:8px;font-size:0.9rem;color:var(--ice);letter-spacing:0.1em;}
+  .flash-controls{display:flex;gap:14px;align-items:center;}
+  .flash-count{font-size:0.95rem;color:#8fa0bd;}
+
+  /* Quiz */
+  .quiz-item{
+    background:rgba(244,247,251,0.04);
+    border:1px solid var(--line);
+    border-radius:14px;
+    padding:20px 22px;margin-bottom:18px;
+  }
+  .quiz-q{font-size:1.15rem;margin-bottom:16px;line-height:1.6;}
+  .quiz-q .jp-inline rt{color:var(--gold);font-size:0.55em;}
+  .quiz-opts{display:grid;gap:12px;}
+  .opt-btn{
+    text-align:left;
+    background:transparent;
+    border:1px solid var(--line);
+    color:var(--snow);
+    padding:13px 16px;border-radius:10px;
+    cursor:pointer;font-size:1.05rem;
+    font-family:'Noto Sans KR',sans-serif;
+    transition:all .15s ease;
+  }
+  .opt-btn:hover{border-color:var(--ice);}
+  .opt-btn.correct{background:rgba(140,200,160,0.18);border-color:#8cc8a0;}
+  .opt-btn.wrong{background:rgba(220,120,120,0.18);border-color:#dc7878;}
+  .opt-btn:disabled{cursor:default;}
+  .quiz-footer{
+    text-align:center;margin-top:20px;
+  }
+  #score-box{
+    font-family:'Shippori Mincho',serif;
+    font-size:1.3rem;color:var(--gold);
+    margin-top:16px;
+  }
+  footer{
+    text-align:center;padding:40px 20px;color:#5c6c88;font-size:0.8rem;
+  }
+</style>
+</head>
+<body>
+
+<div class="snowlayer" id="snow"></div>
+
+<header>
+  <h1 class="jp-title">瞳をとじて</h1>
+  <div class="subtitle">「히토미오 토지테」— 平井堅(히라이 켄) · 일본어 가사 학습 노트</div>
+</header>
+
+<div class="toggle-bar">
+  <button class="ui-btn active" id="btn-furigana" onclick="toggleFurigana()">후리가나 표시</button>
+  <button class="ui-btn active" id="btn-kr" onclick="toggleKr()">한국어 번역 표시</button>
+</div>
+<noscript>
+  <div style="background:#3a2a2a;color:#f4d9d9;text-align:center;padding:14px 20px;font-size:0.95rem;">
+    이 브라우저는 자바스크립트를 실행하지 않아 가사·단어·문법은 보이지만 플래시카드와 퀴즈는 작동하지 않습니다.
+    Safari나 Claude 앱에서 열면 전체 기능을 이용할 수 있어요.
+  </div>
+</noscript>
+
+<main>
+  <div id="stanzas"><section class="stanza">
+    <div class="stanza-label">1절</div>
+    <div class="line-block"><div class="jp-line"><ruby>朝<rt>あさ</rt></ruby><ruby>目覚<rt>めざ</rt></ruby>める<ruby>度<rt>たび</rt></ruby>に <ruby>君<rt>きみ</rt></ruby>の<ruby>抜<rt>ぬ</rt></ruby>け<ruby>殻<rt>がら</rt></ruby>が<ruby>横<rt>よこ</rt></ruby>にいる</div><div class="kr-line">아침마다 눈을 뜨면 네가 남긴 빈자리가 옆에 있어</div></div><div class="line-block"><div class="jp-line">ぬくもりを<ruby>感<rt>かん</rt></ruby>じた いつもの<ruby>背<rt>せ</rt></ruby><ruby>中<rt>なか</rt></ruby>が<ruby>冷<rt>つめ</rt></ruby>たい</div><div class="kr-line">온기를 느끼던 그 등이 이제는 차가워</div></div><div class="line-block"><div class="jp-line"><ruby>苦<rt>にが</rt></ruby><ruby>笑<rt>わら</rt></ruby>いをやめて <ruby>重<rt>おも</rt></ruby>いカーテンを<ruby>開<rt>あ</rt></ruby>けよう</div><div class="kr-line">쓴웃음은 그만 짓고 무거운 커튼을 열자</div></div><div class="line-block"><div class="jp-line"><ruby>眩<rt>まぶ</rt></ruby>しすぎる<ruby>朝<rt>あさ</rt></ruby><ruby>日<rt>ひ</rt></ruby> <ruby>僕<rt>ぼく</rt></ruby>と<ruby>毎日<rt>まいにち</rt></ruby>の<ruby>追<rt>お</rt></ruby>いかけっこだ</div><div class="kr-line">너무 눈부신 아침 햇살과 나는 매일 쫓고 쫓기는 술래잡기를 해</div></div>
+    <div class="notes">
+      <div class="note-card"><h4>주요 단어</h4><ul><li><span class="w"><ruby>朝<rt>あさ</rt></ruby></span><br><span class="m">아침</span></li><li><span class="w"><ruby>目覚<rt>めざ</rt></ruby>める</span><br><span class="m">잠에서 깨다</span></li><li><span class="w"><ruby>君<rt>きみ</rt></ruby></span><br><span class="m">너, 그대</span></li><li><span class="w"><ruby>抜<rt>ぬ</rt></ruby>け<ruby>殻<rt>がら</rt></ruby></span><br><span class="m">빈 껍데기, 남은 흔적</span></li><li><span class="w"><ruby>横<rt>よこ</rt></ruby></span><br><span class="m">옆, 가로</span></li><li><span class="w">ぬくもり</span><br><span class="m">온기</span></li><li><span class="w">いつも</span><br><span class="m">항상, 늘</span></li><li><span class="w"><ruby>背<rt>せ</rt></ruby><ruby>中<rt>なか</rt></ruby></span><br><span class="m">등</span></li><li><span class="w"><ruby>冷<rt>つめ</rt></ruby>たい</span><br><span class="m">차갑다</span></li><li><span class="w"><ruby>苦<rt>にが</rt></ruby><ruby>笑<rt>わら</rt></ruby>い</span><br><span class="m">쓴웃음</span></li><li><span class="w"><ruby>重<rt>おも</rt></ruby>い</span><br><span class="m">무겁다</span></li><li><span class="w"><ruby>開<rt>あ</rt></ruby>ける</span><br><span class="m">열다</span></li><li><span class="w"><ruby>眩<rt>まぶ</rt></ruby>しい</span><br><span class="m">눈부시다</span></li><li><span class="w"><ruby>朝<rt>あさ</rt></ruby><ruby>日<rt>ひ</rt></ruby></span><br><span class="m">아침 햇살</span></li><li><span class="w"><ruby>毎日<rt>まいにち</rt></ruby></span><br><span class="m">매일</span></li><li><span class="w"><ruby>追<rt>お</rt></ruby>いかけっこ</span><br><span class="m">술래잡기</span></li></ul></div>
+      <div class="note-card"><h4>문법 포인트</h4><ul><li><span class="w">~度に</span><br><span class="m">~할 때마다</span></li><li><span class="w">~をやめて</span><br><span class="m">~하는 것을 그만두고</span></li><li><span class="w">형용사+すぎる</span><br><span class="m">지나치게 ~하다 (眩しすぎる=너무 눈부시다)</span></li></ul></div>
+    </div>
+  </section>
+<section class="stanza">
+    <div class="stanza-label">후렴 1</div>
+    <div class="line-block"><div class="jp-line">あの<ruby>日<rt>ひ</rt></ruby> <ruby>見<rt>み</rt></ruby>せた<ruby>泣<rt>な</rt></ruby>き<ruby>顔<rt>がお</rt></ruby> <ruby>涙<rt>なみだ</rt></ruby><ruby>照<rt>て</rt></ruby>らす<ruby>夕陽<rt>ゆうひ</rt></ruby> <ruby>肩<rt>かた</rt></ruby>のぬくもり</div><div class="kr-line">그날 보여줬던 울먹이던 얼굴, 눈물을 비추던 저녁노을, 어깨의 온기</div></div><div class="line-block"><div class="jp-line"><ruby>消<rt>け</rt></ruby>し<ruby>去<rt>さ</rt></ruby>ろうと<ruby>願<rt>ねが</rt></ruby>う<ruby>度<rt>たび</rt></ruby>に <ruby>心<rt>こころ</rt></ruby>が <ruby>体<rt>からだ</rt></ruby>が <ruby>君<rt>きみ</rt></ruby>を<ruby>覚<rt>おぼ</rt></ruby>えている</div><div class="kr-line">지우려고 바랄 때마다 마음이, 몸이 너를 기억하고 있어</div></div><div class="line-block"><div class="jp-line">Your love forever <ruby>瞳<rt>ひとみ</rt></ruby>をとじて <ruby>君<rt>きみ</rt></ruby>を<ruby>描<rt>えが</rt></ruby>くよ それだけでいい</div><div class="kr-line">Your love forever, 눈을 감고 너를 그려, 그것만으로 충분해</div></div><div class="line-block"><div class="jp-line">たとえ<ruby>季節<rt>きせつ</rt></ruby>が <ruby>僕<rt>ぼく</rt></ruby>の<ruby>心<rt>こころ</rt></ruby>を <ruby>置<rt>お</rt></ruby>き<ruby>去<rt>ざ</rt></ruby>りにしても</div><div class="kr-line">설령 계절이 내 마음을 두고 가버려도</div></div>
+    <div class="notes">
+      <div class="note-card"><h4>주요 단어</h4><ul><li><span class="w">あの<ruby>日<rt>ひ</rt></ruby></span><br><span class="m">그날</span></li><li><span class="w"><ruby>見<rt>み</rt></ruby>せる</span><br><span class="m">보여주다</span></li><li><span class="w"><ruby>泣<rt>な</rt></ruby>き<ruby>顔<rt>がお</rt></ruby></span><br><span class="m">우는 얼굴</span></li><li><span class="w"><ruby>涙<rt>なみだ</rt></ruby></span><br><span class="m">눈물</span></li><li><span class="w"><ruby>照<rt>て</rt></ruby>らす</span><br><span class="m">비추다</span></li><li><span class="w"><ruby>夕陽<rt>ゆうひ</rt></ruby></span><br><span class="m">노을, 석양</span></li><li><span class="w"><ruby>肩<rt>かた</rt></ruby></span><br><span class="m">어깨</span></li><li><span class="w"><ruby>消<rt>け</rt></ruby>し<ruby>去<rt>さ</rt></ruby>る</span><br><span class="m">지워 없애다</span></li><li><span class="w"><ruby>願<rt>ねが</rt></ruby>う</span><br><span class="m">바라다</span></li><li><span class="w"><ruby>心<rt>こころ</rt></ruby></span><br><span class="m">마음</span></li><li><span class="w"><ruby>体<rt>からだ</rt></ruby></span><br><span class="m">몸</span></li><li><span class="w"><ruby>覚<rt>おぼ</rt></ruby>える</span><br><span class="m">기억하다</span></li><li><span class="w"><ruby>瞳<rt>ひとみ</rt></ruby></span><br><span class="m">눈동자</span></li><li><span class="w">とじる(<ruby>閉<rt>と</rt></ruby>じる)</span><br><span class="m">(눈을) 감다, 닫다</span></li><li><span class="w"><ruby>描<rt>えが</rt></ruby>く</span><br><span class="m">그리다</span></li><li><span class="w"><ruby>季節<rt>きせつ</rt></ruby></span><br><span class="m">계절</span></li><li><span class="w"><ruby>置<rt>お</rt></ruby>き<ruby>去<rt>ざ</rt></ruby>り</span><br><span class="m">남겨두고 감</span></li></ul></div>
+      <div class="note-card"><h4>문법 포인트</h4><ul><li><span class="w">~だけでいい</span><br><span class="m">~만으로 충분하다</span></li><li><span class="w">たとえ~ても</span><br><span class="m">설령 ~해도 (가정·양보)</span></li><li><span class="w">~にしても</span><br><span class="m">~라고 해도</span></li></ul></div>
+    </div>
+  </section>
+<section class="stanza">
+    <div class="stanza-label">2절</div>
+    <div class="line-block"><div class="jp-line">いつかは<ruby>君<rt>きみ</rt></ruby>のこと なにも<ruby>感<rt>かん</rt></ruby>じなくなるのかな</div><div class="kr-line">언젠가는 너에 대해 아무것도 느끼지 않게 될까</div></div><div class="line-block"><div class="jp-line"><ruby>今<rt>いま</rt></ruby>の<ruby>痛<rt>いた</rt></ruby>み<ruby>抱<rt>だ</rt></ruby>いて <ruby>眠<rt>ねむ</rt></ruby>る<ruby>方<rt>ほう</rt></ruby>がまだ いいかな</div><div class="kr-line">지금의 이 아픔을 안고 잠드는 편이 차라리 나을까</div></div>
+    <div class="notes">
+      <div class="note-card"><h4>주요 단어</h4><ul><li><span class="w">いつか</span><br><span class="m">언젠가</span></li><li><span class="w"><ruby>感<rt>かん</rt></ruby>じる</span><br><span class="m">느끼다</span></li><li><span class="w"><ruby>今<rt>いま</rt></ruby></span><br><span class="m">지금</span></li><li><span class="w"><ruby>痛<rt>いた</rt></ruby>み</span><br><span class="m">아픔</span></li><li><span class="w"><ruby>抱<rt>だ</rt></ruby>く</span><br><span class="m">안다, 품다</span></li><li><span class="w"><ruby>眠<rt>ねむ</rt></ruby>る</span><br><span class="m">잠들다</span></li><li><span class="w"><ruby>方<rt>ほう</rt></ruby></span><br><span class="m">편, 쪽</span></li></ul></div>
+      <div class="note-card"><h4>문법 포인트</h4><ul><li><span class="w">~なくなる</span><br><span class="m">~하지 않게 되다</span></li><li><span class="w">~方がいい</span><br><span class="m">~하는 편이 좋다</span></li><li><span class="w">~のかな</span><br><span class="m">~려나 (혼잣말 추측)</span></li></ul></div>
+    </div>
+  </section>
+<section class="stanza">
+    <div class="stanza-label">후렴 2</div>
+    <div class="line-block"><div class="jp-line">あの<ruby>日<rt>ひ</rt></ruby> <ruby>見<rt>み</rt></ruby>てた<ruby>星<rt>ほし</rt></ruby><ruby>空<rt>ぞら</rt></ruby> <ruby>願<rt>ねが</rt></ruby>いかけて <ruby>二人<rt>ふたり</rt></ruby><ruby>探<rt>さが</rt></ruby>した<ruby>光<rt>ひかり</rt></ruby>は</div><div class="kr-line">그날 올려다보던 별하늘, 소원을 빌며 둘이서 찾던 그 빛은</div></div><div class="line-block"><div class="jp-line"><ruby>瞬<rt>またた</rt></ruby>く<ruby>間<rt>ま</rt></ruby>に<ruby>消<rt>き</rt></ruby>えてくのに <ruby>心<rt>こころ</rt></ruby>は <ruby>体<rt>からだ</rt></ruby>は <ruby>君<rt>きみ</rt></ruby>で<ruby>輝<rt>かがや</rt></ruby>いてる</div><div class="kr-line">순식간에 사라져 가는데, 마음은 몸은 너로 빛나고 있어</div></div><div class="line-block"><div class="jp-line">I wish forever <ruby>瞳<rt>ひとみ</rt></ruby>をとじて <ruby>君<rt>きみ</rt></ruby>を<ruby>描<rt>えが</rt></ruby>くよ それしか<ruby>出来<rt>でき</rt></ruby>ない</div><div class="kr-line">I wish forever, 눈을 감고 너를 그려, 그것밖에 할 수 없어</div></div><div class="line-block"><div class="jp-line">たとえ<ruby>世界<rt>せかい</rt></ruby>が <ruby>僕<rt>ぼく</rt></ruby>を<ruby>残<rt>のこ</rt></ruby>して <ruby>過<rt>す</rt></ruby>ぎ<ruby>去<rt>さ</rt></ruby>ろうとしても</div><div class="kr-line">설령 세상이 나를 남겨두고 지나가 버리려 해도</div></div>
+    <div class="notes">
+      <div class="note-card"><h4>주요 단어</h4><ul><li><span class="w"><ruby>見<rt>み</rt></ruby>る</span><br><span class="m">보다</span></li><li><span class="w"><ruby>星<rt>ほし</rt></ruby><ruby>空<rt>ぞら</rt></ruby></span><br><span class="m">별하늘</span></li><li><span class="w"><ruby>願<rt>ねが</rt></ruby>いかける</span><br><span class="m">소원을 빌다</span></li><li><span class="w"><ruby>二人<rt>ふたり</rt></ruby></span><br><span class="m">두 사람</span></li><li><span class="w"><ruby>探<rt>さが</rt></ruby>す</span><br><span class="m">찾다</span></li><li><span class="w"><ruby>光<rt>ひかり</rt></ruby></span><br><span class="m">빛</span></li><li><span class="w"><ruby>瞬<rt>またた</rt></ruby>く<ruby>間<rt>ま</rt></ruby></span><br><span class="m">눈 깜짝할 사이</span></li><li><span class="w"><ruby>消<rt>き</rt></ruby>える</span><br><span class="m">사라지다</span></li><li><span class="w"><ruby>輝<rt>かがや</rt></ruby>く</span><br><span class="m">빛나다</span></li><li><span class="w"><ruby>出来<rt>でき</rt></ruby>ない</span><br><span class="m">할 수 없다</span></li><li><span class="w"><ruby>世界<rt>せかい</rt></ruby></span><br><span class="m">세계</span></li><li><span class="w"><ruby>残<rt>のこ</rt></ruby>す</span><br><span class="m">남기다</span></li><li><span class="w"><ruby>過<rt>す</rt></ruby>ぎ<ruby>去<rt>さ</rt></ruby>る</span><br><span class="m">지나가다</span></li></ul></div>
+      <div class="note-card"><h4>문법 포인트</h4><ul><li><span class="w">~間に</span><br><span class="m">~하는 사이에</span></li><li><span class="w">~のに</span><br><span class="m">~는데도 (역접)</span></li><li><span class="w">~しか…ない</span><br><span class="m">~밖에 …없다</span></li><li><span class="w">~としても</span><br><span class="m">~라 해도</span></li></ul></div>
+    </div>
+  </section>
+<section class="stanza">
+    <div class="stanza-label">후렴 3 (엔딩)</div>
+    <div class="line-block"><div class="jp-line">Your love forever <ruby>瞳<rt>ひとみ</rt></ruby>をとじて <ruby>君<rt>きみ</rt></ruby>を<ruby>描<rt>えが</rt></ruby>くよ それだけでいい</div><div class="kr-line">Your love forever, 눈을 감고 너를 그려, 그것만으로 충분해</div></div><div class="line-block"><div class="jp-line">たとえ<ruby>季節<rt>きせつ</rt></ruby>が <ruby>僕<rt>ぼく</rt></ruby>を<ruby>残<rt>のこ</rt></ruby>して <ruby>色<rt>いろ</rt></ruby>を<ruby>変<rt>か</rt></ruby>えようとも</div><div class="kr-line">설령 계절이 나를 남겨두고 색을 바꾸려 해도</div></div><div class="line-block"><div class="jp-line"><ruby>記憶<rt>きおく</rt></ruby>の<ruby>中<rt>なか</rt></ruby>に<ruby>君<rt>きみ</rt></ruby>を<ruby>探<rt>さが</rt></ruby>すよ それだけでいい</div><div class="kr-line">기억 속에서 너를 찾을게, 그것만으로 충분해</div></div><div class="line-block"><div class="jp-line">なくしたものを <ruby>越<rt>こ</rt></ruby>える<ruby>強<rt>つよ</rt></ruby>さを <ruby>君<rt>きみ</rt></ruby>がくれたから</div><div class="kr-line">잃어버린 것을 뛰어넘을 힘을, 네가 줬으니까</div></div>
+    <div class="notes">
+      <div class="note-card"><h4>주요 단어</h4><ul><li><span class="w"><ruby>色<rt>いろ</rt></ruby></span><br><span class="m">색</span></li><li><span class="w"><ruby>変<rt>か</rt></ruby>える</span><br><span class="m">바꾸다</span></li><li><span class="w"><ruby>記憶<rt>きおく</rt></ruby></span><br><span class="m">기억</span></li><li><span class="w"><ruby>中<rt>なか</rt></ruby></span><br><span class="m">안, 속</span></li><li><span class="w">なくす</span><br><span class="m">잃다</span></li><li><span class="w"><ruby>越<rt>こ</rt></ruby>える</span><br><span class="m">넘다, 뛰어넘다</span></li><li><span class="w"><ruby>強<rt>つよ</rt></ruby>さ</span><br><span class="m">강함, 힘</span></li><li><span class="w">くれる</span><br><span class="m">(상대가 나에게) ~해 주다</span></li></ul></div>
+      <div class="note-card"><h4>문법 포인트</h4><ul><li><span class="w">たとえ~とも</span><br><span class="m">설령 ~라 해도 (강한 양보)</span></li><li><span class="w">くれる</span><br><span class="m">상대가 나에게 ~해 주다 (수수표현)</span></li><li><span class="w">~から</span><br><span class="m">~이니까, ~때문에 (이유)</span></li></ul></div>
+    </div>
+  </section>
+</div>
+
+  <div class="section-head">
+    <div class="eyebrow">FLASHCARDS</div>
+    <h2>단어 플래시카드</h2>
+  </div>
+  <div class="flash-wrap">
+    <div class="flashcard" id="flashcard" onclick="flipCard()">
+      <div class="flash-inner" id="flash-inner">
+        <div class="flash-face flash-front">
+          <div class="jp-word" id="flash-jp"></div>
+        </div>
+        <div class="flash-face flash-back">
+          <div class="kr-mean" id="flash-kr"></div>
+          <div class="pos" id="flash-pos"></div>
+        </div>
+      </div>
+    </div>
+    <div class="flash-controls">
+      <button class="ui-btn" onclick="prevCard()">← 이전</button>
+      <span class="flash-count" id="flash-count"></span>
+      <button class="ui-btn" onclick="nextCard()">다음 →</button>
+    </div>
+  </div>
+
+  <div class="section-head">
+    <div class="eyebrow">QUIZ</div>
+    <h2>단어 · 문법 퀴즈</h2>
+  </div>
+  <div id="quiz-container"></div>
+  <div class="quiz-footer">
+    <button class="ui-btn" onclick="gradeQuiz()">채점하기</button>
+    <div id="score-box"></div>
+  </div>
+</main>
+
+<footer>瞳をとじて — 가사 학습 자료 · 개인 학습용</footer>
+
+<script>
+/* ---------- snowfall ---------- */
+const snow = document.getElementById('snow');
+for(let i=0;i<40;i++){
+  const f = document.createElement('div');
+  f.className='flake';
+  const size = 2+Math.random()*4;
+  f.style.width=size+'px';
+  f.style.height=size+'px';
+  f.style.left = Math.random()*100+'vw';
+  f.style.setProperty('--drift', (Math.random()*60-30)+'px');
+  f.style.animationDuration = (8+Math.random()*10)+'s';
+  f.style.animationDelay = (Math.random()*10)+'s';
+  snow.appendChild(f);
+}
+
+/* ---------- toggles ---------- */
+function toggleFurigana(){
+  document.body.classList.toggle('hide-furigana');
+  document.getElementById('btn-furigana').classList.toggle('active');
+}
+function toggleKr(){
+  document.body.classList.toggle('hide-kr');
+  document.getElementById('btn-kr').classList.toggle('active');
+}
+
+/* ---------- stanza data ---------- */
+const stanzas = [
+{
+  label:"1절",
+  lines:[
+    ["<ruby>朝<rt>あさ</rt></ruby><ruby>目覚<rt>めざ</rt></ruby>める<ruby>度<rt>たび</rt></ruby>に <ruby>君<rt>きみ</rt></ruby>の<ruby>抜<rt>ぬ</rt></ruby>け<ruby>殻<rt>がら</rt></ruby>が<ruby>横<rt>よこ</rt></ruby>にいる","아침마다 눈을 뜨면 네가 남긴 빈자리가 옆에 있어"],
+    ["ぬくもりを<ruby>感<rt>かん</rt></ruby>じた いつもの<ruby>背<rt>せ</rt></ruby><ruby>中<rt>なか</rt></ruby>が<ruby>冷<rt>つめ</rt></ruby>たい","온기를 느끼던 그 등이 이제는 차가워"],
+    ["<ruby>苦<rt>にが</rt></ruby><ruby>笑<rt>わら</rt></ruby>いをやめて <ruby>重<rt>おも</rt></ruby>いカーテンを<ruby>開<rt>あ</rt></ruby>けよう","쓴웃음은 그만 짓고 무거운 커튼을 열자"],
+    ["<ruby>眩<rt>まぶ</rt></ruby>しすぎる<ruby>朝<rt>あさ</rt></ruby><ruby>日<rt>ひ</rt></ruby> <ruby>僕<rt>ぼく</rt></ruby>と<ruby>毎日<rt>まいにち</rt></ruby>の<ruby>追<rt>お</rt></ruby>いかけっこだ","너무 눈부신 아침 햇살과 나는 매일 쫓고 쫓기는 술래잡기를 해"]
+  ],
+  vocab:[
+    ["<ruby>朝<rt>あさ</rt></ruby>","아침"],
+    ["<ruby>目覚<rt>めざ</rt></ruby>める","잠에서 깨다"],
+    ["<ruby>君<rt>きみ</rt></ruby>","너, 그대"],
+    ["<ruby>抜<rt>ぬ</rt></ruby>け<ruby>殻<rt>がら</rt></ruby>","빈 껍데기, 남은 흔적"],
+    ["<ruby>横<rt>よこ</rt></ruby>","옆, 가로"],
+    ["ぬくもり","온기"],
+    ["いつも","항상, 늘"],
+    ["<ruby>背<rt>せ</rt></ruby><ruby>中<rt>なか</rt></ruby>","등"],
+    ["<ruby>冷<rt>つめ</rt></ruby>たい","차갑다"],
+    ["<ruby>苦<rt>にが</rt></ruby><ruby>笑<rt>わら</rt></ruby>い","쓴웃음"],
+    ["<ruby>重<rt>おも</rt></ruby>い","무겁다"],
+    ["<ruby>開<rt>あ</rt></ruby>ける","열다"],
+    ["<ruby>眩<rt>まぶ</rt></ruby>しい","눈부시다"],
+    ["<ruby>朝<rt>あさ</rt></ruby><ruby>日<rt>ひ</rt></ruby>","아침 햇살"],
+    ["<ruby>毎日<rt>まいにち</rt></ruby>","매일"],
+    ["<ruby>追<rt>お</rt></ruby>いかけっこ","술래잡기"]
+  ],
+  grammar:[["~度に","~할 때마다"],["~をやめて","~하는 것을 그만두고"],["형용사+すぎる","지나치게 ~하다 (眩しすぎる=너무 눈부시다)"]]
+},
+{
+  label:"후렴 1",
+  lines:[
+    ["あの<ruby>日<rt>ひ</rt></ruby> <ruby>見<rt>み</rt></ruby>せた<ruby>泣<rt>な</rt></ruby>き<ruby>顔<rt>がお</rt></ruby> <ruby>涙<rt>なみだ</rt></ruby><ruby>照<rt>て</rt></ruby>らす<ruby>夕陽<rt>ゆうひ</rt></ruby> <ruby>肩<rt>かた</rt></ruby>のぬくもり","그날 보여줬던 울먹이던 얼굴, 눈물을 비추던 저녁노을, 어깨의 온기"],
+    ["<ruby>消<rt>け</rt></ruby>し<ruby>去<rt>さ</rt></ruby>ろうと<ruby>願<rt>ねが</rt></ruby>う<ruby>度<rt>たび</rt></ruby>に <ruby>心<rt>こころ</rt></ruby>が <ruby>体<rt>からだ</rt></ruby>が <ruby>君<rt>きみ</rt></ruby>を<ruby>覚<rt>おぼ</rt></ruby>えている","지우려고 바랄 때마다 마음이, 몸이 너를 기억하고 있어"],
+    ["Your love forever <ruby>瞳<rt>ひとみ</rt></ruby>をとじて <ruby>君<rt>きみ</rt></ruby>を<ruby>描<rt>えが</rt></ruby>くよ それだけでいい","Your love forever, 눈을 감고 너를 그려, 그것만으로 충분해"],
+    ["たとえ<ruby>季節<rt>きせつ</rt></ruby>が <ruby>僕<rt>ぼく</rt></ruby>の<ruby>心<rt>こころ</rt></ruby>を <ruby>置<rt>お</rt></ruby>き<ruby>去<rt>ざ</rt></ruby>りにしても","설령 계절이 내 마음을 두고 가버려도"]
+  ],
+  vocab:[
+    ["あの<ruby>日<rt>ひ</rt></ruby>","그날"],
+    ["<ruby>見<rt>み</rt></ruby>せる","보여주다"],
+    ["<ruby>泣<rt>な</rt></ruby>き<ruby>顔<rt>がお</rt></ruby>","우는 얼굴"],
+    ["<ruby>涙<rt>なみだ</rt></ruby>","눈물"],
+    ["<ruby>照<rt>て</rt></ruby>らす","비추다"],
+    ["<ruby>夕陽<rt>ゆうひ</rt></ruby>","노을, 석양"],
+    ["<ruby>肩<rt>かた</rt></ruby>","어깨"],
+    ["<ruby>消<rt>け</rt></ruby>し<ruby>去<rt>さ</rt></ruby>る","지워 없애다"],
+    ["<ruby>願<rt>ねが</rt></ruby>う","바라다"],
+    ["<ruby>心<rt>こころ</rt></ruby>","마음"],
+    ["<ruby>体<rt>からだ</rt></ruby>","몸"],
+    ["<ruby>覚<rt>おぼ</rt></ruby>える","기억하다"],
+    ["<ruby>瞳<rt>ひとみ</rt></ruby>","눈동자"],
+    ["とじる(<ruby>閉<rt>と</rt></ruby>じる)","(눈을) 감다, 닫다"],
+    ["<ruby>描<rt>えが</rt></ruby>く","그리다"],
+    ["<ruby>季節<rt>きせつ</rt></ruby>","계절"],
+    ["<ruby>置<rt>お</rt></ruby>き<ruby>去<rt>ざ</rt></ruby>り","남겨두고 감"]
+  ],
+  grammar:[["~だけでいい","~만으로 충분하다"],["たとえ~ても","설령 ~해도 (가정·양보)"],["~にしても","~라고 해도"]]
+},
+{
+  label:"2절",
+  lines:[
+    ["いつかは<ruby>君<rt>きみ</rt></ruby>のこと なにも<ruby>感<rt>かん</rt></ruby>じなくなるのかな","언젠가는 너에 대해 아무것도 느끼지 않게 될까"],
+    ["<ruby>今<rt>いま</rt></ruby>の<ruby>痛<rt>いた</rt></ruby>み<ruby>抱<rt>だ</rt></ruby>いて <ruby>眠<rt>ねむ</rt></ruby>る<ruby>方<rt>ほう</rt></ruby>がまだ いいかな","지금의 이 아픔을 안고 잠드는 편이 차라리 나을까"]
+  ],
+  vocab:[
+    ["いつか","언젠가"],
+    ["<ruby>感<rt>かん</rt></ruby>じる","느끼다"],
+    ["<ruby>今<rt>いま</rt></ruby>","지금"],
+    ["<ruby>痛<rt>いた</rt></ruby>み","아픔"],
+    ["<ruby>抱<rt>だ</rt></ruby>く","안다, 품다"],
+    ["<ruby>眠<rt>ねむ</rt></ruby>る","잠들다"],
+    ["<ruby>方<rt>ほう</rt></ruby>","편, 쪽"]
+  ],
+  grammar:[["~なくなる","~하지 않게 되다"],["~方がいい","~하는 편이 좋다"],["~のかな","~려나 (혼잣말 추측)"]]
+},
+{
+  label:"후렴 2",
+  lines:[
+    ["あの<ruby>日<rt>ひ</rt></ruby> <ruby>見<rt>み</rt></ruby>てた<ruby>星<rt>ほし</rt></ruby><ruby>空<rt>ぞら</rt></ruby> <ruby>願<rt>ねが</rt></ruby>いかけて <ruby>二人<rt>ふたり</rt></ruby><ruby>探<rt>さが</rt></ruby>した<ruby>光<rt>ひかり</rt></ruby>は","그날 올려다보던 별하늘, 소원을 빌며 둘이서 찾던 그 빛은"],
+    ["<ruby>瞬<rt>またた</rt></ruby>く<ruby>間<rt>ま</rt></ruby>に<ruby>消<rt>き</rt></ruby>えてくのに <ruby>心<rt>こころ</rt></ruby>は <ruby>体<rt>からだ</rt></ruby>は <ruby>君<rt>きみ</rt></ruby>で<ruby>輝<rt>かがや</rt></ruby>いてる","순식간에 사라져 가는데, 마음은 몸은 너로 빛나고 있어"],
+    ["I wish forever <ruby>瞳<rt>ひとみ</rt></ruby>をとじて <ruby>君<rt>きみ</rt></ruby>を<ruby>描<rt>えが</rt></ruby>くよ それしか<ruby>出来<rt>でき</rt></ruby>ない","I wish forever, 눈을 감고 너를 그려, 그것밖에 할 수 없어"],
+    ["たとえ<ruby>世界<rt>せかい</rt></ruby>が <ruby>僕<rt>ぼく</rt></ruby>を<ruby>残<rt>のこ</rt></ruby>して <ruby>過<rt>す</rt></ruby>ぎ<ruby>去<rt>さ</rt></ruby>ろうとしても","설령 세상이 나를 남겨두고 지나가 버리려 해도"]
+  ],
+  vocab:[
+    ["<ruby>見<rt>み</rt></ruby>る","보다"],
+    ["<ruby>星<rt>ほし</rt></ruby><ruby>空<rt>ぞら</rt></ruby>","별하늘"],
+    ["<ruby>願<rt>ねが</rt></ruby>いかける","소원을 빌다"],
+    ["<ruby>二人<rt>ふたり</rt></ruby>","두 사람"],
+    ["<ruby>探<rt>さが</rt></ruby>す","찾다"],
+    ["<ruby>光<rt>ひかり</rt></ruby>","빛"],
+    ["<ruby>瞬<rt>またた</rt></ruby>く<ruby>間<rt>ま</rt></ruby>","눈 깜짝할 사이"],
+    ["<ruby>消<rt>き</rt></ruby>える","사라지다"],
+    ["<ruby>輝<rt>かがや</rt></ruby>く","빛나다"],
+    ["<ruby>出来<rt>でき</rt></ruby>ない","할 수 없다"],
+    ["<ruby>世界<rt>せかい</rt></ruby>","세계"],
+    ["<ruby>残<rt>のこ</rt></ruby>す","남기다"],
+    ["<ruby>過<rt>す</rt></ruby>ぎ<ruby>去<rt>さ</rt></ruby>る","지나가다"]
+  ],
+  grammar:[["~間に","~하는 사이에"],["~のに","~는데도 (역접)"],["~しか…ない","~밖에 …없다"],["~としても","~라 해도"]]
+},
+{
+  label:"후렴 3 (엔딩)",
+  lines:[
+    ["Your love forever <ruby>瞳<rt>ひとみ</rt></ruby>をとじて <ruby>君<rt>きみ</rt></ruby>を<ruby>描<rt>えが</rt></ruby>くよ それだけでいい","Your love forever, 눈을 감고 너를 그려, 그것만으로 충분해"],
+    ["たとえ<ruby>季節<rt>きせつ</rt></ruby>が <ruby>僕<rt>ぼく</rt></ruby>を<ruby>残<rt>のこ</rt></ruby>して <ruby>色<rt>いろ</rt></ruby>を<ruby>変<rt>か</rt></ruby>えようとも","설령 계절이 나를 남겨두고 색을 바꾸려 해도"],
+    ["<ruby>記憶<rt>きおく</rt></ruby>の<ruby>中<rt>なか</rt></ruby>に<ruby>君<rt>きみ</rt></ruby>を<ruby>探<rt>さが</rt></ruby>すよ それだけでいい","기억 속에서 너를 찾을게, 그것만으로 충분해"],
+    ["なくしたものを <ruby>越<rt>こ</rt></ruby>える<ruby>強<rt>つよ</rt></ruby>さを <ruby>君<rt>きみ</rt></ruby>がくれたから","잃어버린 것을 뛰어넘을 힘을, 네가 줬으니까"]
+  ],
+  vocab:[
+    ["<ruby>色<rt>いろ</rt></ruby>","색"],
+    ["<ruby>変<rt>か</rt></ruby>える","바꾸다"],
+    ["<ruby>記憶<rt>きおく</rt></ruby>","기억"],
+    ["<ruby>中<rt>なか</rt></ruby>","안, 속"],
+    ["なくす","잃다"],
+    ["<ruby>越<rt>こ</rt></ruby>える","넘다, 뛰어넘다"],
+    ["<ruby>強<rt>つよ</rt></ruby>さ","강함, 힘"],
+    ["くれる","(상대가 나에게) ~해 주다"]
+  ],
+  grammar:[["たとえ~とも","설령 ~라 해도 (강한 양보)"],["くれる","상대가 나에게 ~해 주다 (수수표현)"],["~から","~이니까, ~때문에 (이유)"]]
+}
+];
+
+/* build stanza DOM */
+const stanzaContainer = document.getElementById('stanzas');
+stanzaContainer.innerHTML = ''; /* clear static no-JS fallback before rebuilding identically */
+stanzas.forEach(st=>{
+  const sec = document.createElement('section');
+  sec.className='stanza';
+  let linesHtml = st.lines.map(l=>`<div class="line-block"><div class="jp-line">${l[0]}</div><div class="kr-line">${l[1]}</div></div>`).join('');
+  let vocabHtml = st.vocab.map(v=>{
+    const parts = v[0].split(' <rt>');
+    return `<li><span class="w">${v[0]}</span><br><span class="m">${v[1]}</span></li>`;
+  }).join('');
+  let grammarHtml = st.grammar.map(g=>`<li><span class="w">${g[0]}</span><br><span class="m">${g[1]}</span></li>`).join('');
+  sec.innerHTML = `
+    <div class="stanza-label">${st.label}</div>
+    ${linesHtml}
+    <div class="notes">
+      <div class="note-card"><h4>주요 단어</h4><ul>${vocabHtml}</ul></div>
+      <div class="note-card"><h4>문법 포인트</h4><ul>${grammarHtml}</ul></div>
+    </div>
+  `;
+  stanzaContainer.appendChild(sec);
+});
+
+/* ---------- flashcards ---------- */
+const flashData = [
+  ["<ruby>朝<rt>あさ</rt></ruby>","아침"],
+  ["<ruby>目覚<rt>めざ</rt></ruby>める","잠에서 깨다"],
+  ["<ruby>君<rt>きみ</rt></ruby>","너, 그대"],
+  ["<ruby>抜<rt>ぬ</rt></ruby>け<ruby>殻<rt>がら</rt></ruby>","빈 껍데기, 남은 흔적"],
+  ["<ruby>横<rt>よこ</rt></ruby>","옆, 가로"],
+  ["ぬくもり","온기"],
+  ["いつも","항상, 늘"],
+  ["<ruby>背<rt>せ</rt></ruby><ruby>中<rt>なか</rt></ruby>","등"],
+  ["<ruby>冷<rt>つめ</rt></ruby>たい","차갑다"],
+  ["<ruby>苦<rt>にが</rt></ruby><ruby>笑<rt>わら</rt></ruby>い","쓴웃음"],
+  ["<ruby>重<rt>おも</rt></ruby>い","무겁다"],
+  ["<ruby>開<rt>あ</rt></ruby>ける","열다"],
+  ["<ruby>眩<rt>まぶ</rt></ruby>しい","눈부시다"],
+  ["<ruby>朝<rt>あさ</rt></ruby><ruby>日<rt>ひ</rt></ruby>","아침 햇살"],
+  ["<ruby>毎日<rt>まいにち</rt></ruby>","매일"],
+  ["<ruby>追<rt>お</rt></ruby>いかけっこ","술래잡기"],
+  ["あの<ruby>日<rt>ひ</rt></ruby>","그날"],
+  ["<ruby>見<rt>み</rt></ruby>せる","보여주다"],
+  ["<ruby>泣<rt>な</rt></ruby>き<ruby>顔<rt>がお</rt></ruby>","우는 얼굴"],
+  ["<ruby>涙<rt>なみだ</rt></ruby>","눈물"],
+  ["<ruby>照<rt>て</rt></ruby>らす","비추다"],
+  ["<ruby>夕陽<rt>ゆうひ</rt></ruby>","노을, 석양"],
+  ["<ruby>肩<rt>かた</rt></ruby>","어깨"],
+  ["<ruby>消<rt>け</rt></ruby>し<ruby>去<rt>さ</rt></ruby>る","지워 없애다"],
+  ["<ruby>願<rt>ねが</rt></ruby>う","바라다"],
+  ["<ruby>心<rt>こころ</rt></ruby>","마음"],
+  ["<ruby>体<rt>からだ</rt></ruby>","몸"],
+  ["<ruby>覚<rt>おぼ</rt></ruby>える","기억하다"],
+  ["<ruby>瞳<rt>ひとみ</rt></ruby>","눈동자"],
+  ["とじる(<ruby>閉<rt>と</rt></ruby>じる)","(눈을) 감다, 닫다"],
+  ["<ruby>描<rt>えが</rt></ruby>く","그리다"],
+  ["<ruby>季節<rt>きせつ</rt></ruby>","계절"],
+  ["<ruby>置<rt>お</rt></ruby>き<ruby>去<rt>ざ</rt></ruby>り","남겨두고 감"],
+  ["いつか","언젠가"],
+  ["<ruby>感<rt>かん</rt></ruby>じる","느끼다"],
+  ["<ruby>今<rt>いま</rt></ruby>","지금"],
+  ["<ruby>痛<rt>いた</rt></ruby>み","아픔"],
+  ["<ruby>抱<rt>だ</rt></ruby>く","안다, 품다"],
+  ["<ruby>眠<rt>ねむ</rt></ruby>る","잠들다"],
+  ["<ruby>方<rt>ほう</rt></ruby>","편, 쪽"],
+  ["<ruby>見<rt>み</rt></ruby>る","보다"],
+  ["<ruby>星<rt>ほし</rt></ruby><ruby>空<rt>ぞら</rt></ruby>","별하늘"],
+  ["<ruby>願<rt>ねが</rt></ruby>いかける","소원을 빌다"],
+  ["<ruby>二人<rt>ふたり</rt></ruby>","두 사람"],
+  ["<ruby>探<rt>さが</rt></ruby>す","찾다"],
+  ["<ruby>光<rt>ひかり</rt></ruby>","빛"],
+  ["<ruby>瞬<rt>またた</rt></ruby>く<ruby>間<rt>ま</rt></ruby>","눈 깜짝할 사이"],
+  ["<ruby>消<rt>き</rt></ruby>える","사라지다"],
+  ["<ruby>輝<rt>かがや</rt></ruby>く","빛나다"],
+  ["<ruby>出来<rt>でき</rt></ruby>ない","할 수 없다"],
+  ["<ruby>世界<rt>せかい</rt></ruby>","세계"],
+  ["<ruby>残<rt>のこ</rt></ruby>す","남기다"],
+  ["<ruby>過<rt>す</rt></ruby>ぎ<ruby>去<rt>さ</rt></ruby>る","지나가다"],
+  ["<ruby>色<rt>いろ</rt></ruby>","색"],
+  ["<ruby>変<rt>か</rt></ruby>える","바꾸다"],
+  ["<ruby>記憶<rt>きおく</rt></ruby>","기억"],
+  ["<ruby>中<rt>なか</rt></ruby>","안, 속"],
+  ["なくす","잃다"],
+  ["<ruby>越<rt>こ</rt></ruby>える","넘다, 뛰어넘다"],
+  ["<ruby>強<rt>つよ</rt></ruby>さ","강함, 힘"],
+  ["くれる","(상대가 나에게) ~해 주다"]
+];
+let cardIdx = 0;
+function renderCard(){
+  document.getElementById('flash-jp').innerHTML = flashData[cardIdx][0];
+  document.getElementById('flash-kr').innerHTML = flashData[cardIdx][1];
+  document.getElementById('flash-count').textContent = (cardIdx+1)+' / '+flashData.length;
+  document.getElementById('flashcard').classList.remove('flipped');
+}
+function flipCard(){ document.getElementById('flashcard').classList.toggle('flipped'); }
+function nextCard(){ cardIdx = (cardIdx+1)%flashData.length; renderCard(); }
+function prevCard(){ cardIdx = (cardIdx-1+flashData.length)%flashData.length; renderCard(); }
+renderCard();
+
+/* ---------- quiz ---------- */
+const quiz = [
+  {q:'「<ruby>抜<rt>ぬ</rt></ruby>け<ruby>殻<rt>がら</rt></ruby>」의 뜻은?', opts:['빈 껍데기, 남은 흔적','술래잡기','별하늘','쓴웃음'], answer:0},
+  {q:'「<ruby>冷<rt>つめ</rt></ruby>たい」의 뜻은?', opts:['차갑다','눈부시다','빛나다','바라다'], answer:0},
+  {q:'「~度に」의 뉘앙스는?', opts:['~할 때마다','~한 적이 있다','~해야 한다','~하지 않고'], answer:0},
+  {q:'「<ruby>重<rt>おも</rt></ruby>い」의 뜻은?', opts:['무겁다','가볍다','눈부시다','차갑다'], answer:0},
+  {q:'「<ruby>照<rt>て</rt></ruby>らす」의 뜻은?', opts:['비추다','지우다','남기다','넘다'], answer:0},
+  {q:'「<ruby>夕陽<rt>ゆうひ</rt></ruby>」의 뜻은?', opts:['노을, 석양','별하늘','눈동자','기억'], answer:0},
+  {q:'「~だけでいい」의 의미는?', opts:['~만으로 충분하다','~해야만 한다','~할 수 없다','~라고는 해도'], answer:0},
+  {q:'「たとえ~ても」의 뉘앙스는?', opts:['설령 ~해도','반드시 ~해야','~하자마자','~하는 김에'], answer:0},
+  {q:'「<ruby>置<rt>お</rt></ruby>き<ruby>去<rt>ざ</rt></ruby>り」의 뜻은?', opts:['남겨두고 감','뛰어넘음','빛남','그리움'], answer:0},
+  {q:'「とじる(<ruby>閉<rt>と</rt></ruby>じる)」의 뜻은?', opts:['(눈을) 감다, 닫다','그리다','기억하다','바라다'], answer:0},
+  {q:'「~なくなる」의 의미는?', opts:['~하지 않게 되다','~해야 한다','~할 수 있게 되다','~하고 싶어지다'], answer:0},
+  {q:'「~方がいい」의 의미는?', opts:['~하는 편이 좋다','~할 수밖에 없다','~한 적 있다','~하기 전에'], answer:0},
+  {q:'「いつか」의 뜻은?', opts:['언젠가','항상','아직','벌써'], answer:0},
+  {q:'「<ruby>瞬<rt>またた</rt></ruby>く<ruby>間<rt>ま</rt></ruby>に」의 뜻은?', opts:['눈 깜짝할 사이에','오랫동안','언젠가는','가끔'], answer:0},
+  {q:'「<ruby>消<rt>き</rt></ruby>える」와「<ruby>消<rt>け</rt></ruby>し<ruby>去<rt>さ</rt></ruby>る」의 차이는?', opts:['消える=자동으로 사라지다 / 消し去る=의도적으로 지워 없애다','둘 다 완전히 같은 뜻이다','消える=지우다 / 消し去る=나타나다','관련 없는 단어다'], answer:0},
+  {q:'「~しか…ない」의 뜻은?', opts:['~밖에 …없다','~라도 …하다','~해도 …괜찮다','~한다면 …좋다'], answer:0},
+  {q:'「<ruby>探<rt>さが</rt></ruby>す」의 뜻은?', opts:['찾다','바꾸다','넘다','안다'], answer:0},
+  {q:'「<ruby>輝<rt>かがや</rt></ruby>く」의 뜻은?', opts:['빛나다','사라지다','지나가다','잠들다'], answer:0},
+  {q:'「<ruby>記憶<rt>きおく</rt></ruby>」의 뜻은?', opts:['기억','계절','세계','강함'], answer:0},
+  {q:'「なくす」의 뜻은?', opts:['잃다','찾다','바꾸다','넘다'], answer:0},
+  {q:'「<ruby>越<rt>こ</rt></ruby>える」의 뜻은?', opts:['넘다, 뛰어넘다','바꾸다','남기다','느끼다'], answer:0},
+  {q:'「たとえ~とも」의 뉘앙스는?', opts:['~라 해도 (강한 양보)','~하자마자','~하기 때문에','~하는 동안'], answer:0},
+  {q:'「くれる」의 문법적 의미는?', opts:['상대가 나에게 ~해 주다','내가 상대에게 ~해 주다','~하게 하다','~되다'], answer:0},
+  {q:'「くれたから」에서「~から」의 의미는?', opts:['~이니까, ~때문에 (이유)','~부터 (장소/시간)','~라고 해도','~하는 동안'], answer:0}
+];
+
+const quizContainer = document.getElementById('quiz-container');
+quiz.forEach((item,i)=>{
+  const div = document.createElement('div');
+  div.className='quiz-item';
+  div.dataset.answer = item.answer;
+  div.dataset.answered = "false";
+  const optsHtml = item.opts.map((o,idx)=>`<button class="opt-btn" data-idx="${idx}" onclick="selectOpt(this,${i})">${o}</button>`).join('');
+  div.innerHTML = `<div class="quiz-q"><span class="jp-inline">${i+1}. ${item.q}</span></div><div class="quiz-opts">${optsHtml}</div>`;
+  quizContainer.appendChild(div);
+});
+
+function selectOpt(btn, qIndex){
+  const parent = btn.closest('.quiz-item');
+  if(parent.dataset.answered === "true") return;
+  parent.dataset.answered = "true";
+  const correctIdx = parseInt(parent.dataset.answer);
+  const chosenIdx = parseInt(btn.dataset.idx);
+  const buttons = parent.querySelectorAll('.opt-btn');
+  buttons.forEach(b=>b.disabled=true);
+  buttons[correctIdx].classList.add('correct');
+  if(chosenIdx !== correctIdx){ btn.classList.add('wrong'); }
+}
+
+function gradeQuiz(){
+  const items = document.querySelectorAll('.quiz-item');
+  let correct = 0;
+  items.forEach(item=>{
+    const correctIdx = parseInt(item.dataset.answer);
+    const buttons = item.querySelectorAll('.opt-btn');
+    if(item.dataset.answered === "true"){
+      buttons.forEach(b=>{
+        if(parseInt(b.dataset.idx)===correctIdx && (b.classList.contains('correct'))){
+          // check if that same button was the one clicked correctly (no wrong marked before it in this item)
+        }
+      });
+      const wrongMarked = item.querySelector('.opt-btn.wrong');
+      if(!wrongMarked) correct++;
+    } else {
+      buttons.forEach(b=>b.disabled=true);
+      buttons[correctIdx].classList.add('correct');
+    }
+  });
+  document.getElementById('score-box').textContent = `점수: ${correct} / ${items.length}`;
+}
+</script>
+</body>
+</html>
